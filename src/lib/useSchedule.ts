@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import { getTimeList, TcUnit } from "../models/tcModel";
 
 export type UseScheduleReturnType = {
   tcList: TcUnit[];
+  setTcList: Dispatch<SetStateAction<TcUnit[]>>;
   undo: (start: number, end: number, list: TcUnit[]) => void;
   cellClickHandler: (e: React.MouseEvent<HTMLDivElement>) => void;
   contextHandler: (e: React.MouseEvent<HTMLDivElement>) => void;
@@ -31,7 +32,9 @@ function merge(start: number, end: number, list: TcUnit[]) {
 
 export default function useSchedule(): UseScheduleReturnType {
   const [tcList, setTcList] = useState(
-    getTimeList().map((time, i) => new TcUnit(time, 1, i))
+    getTimeList().map(
+      (time, i) => new TcUnit(i, new Date().toLocaleDateString(), time, 0)
+    )
   );
   const [firstIdx, setfirstIdx] = useState(0);
   const [secondIdx, setsecondIdx] = useState(0);
@@ -50,7 +53,9 @@ export default function useSchedule(): UseScheduleReturnType {
 
   const cellClickHandler = (e: React.MouseEvent<HTMLDivElement>) => {
     e.stopPropagation();
-    const targetIdx = tcList.findIndex((tc) => tc.time === e.currentTarget.id);
+    const targetIdx = tcList.findIndex(
+      (tc) => tc.time === e.currentTarget.id.split("-")[1]
+    );
     const newList = [...tcList];
 
     switch (cellClickNum) {
@@ -84,7 +89,7 @@ export default function useSchedule(): UseScheduleReturnType {
 
     if (cellClickNum === 0) {
       const targetIdx = tcList.findIndex(
-        (tc) => tc.time === e.currentTarget.id
+        (tc) => tc.time === e.currentTarget.id.split("-")[1]
       );
       const newList = [...tcList];
       newList[targetIdx].isSelected = true;
@@ -145,6 +150,7 @@ export default function useSchedule(): UseScheduleReturnType {
 
   return {
     tcList,
+    setTcList,
     undo,
     cellClickHandler,
     contextHandler,

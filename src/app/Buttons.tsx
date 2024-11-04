@@ -3,12 +3,40 @@ import { open } from "@tauri-apps/plugin-dialog";
 import { BaseDirectory, writeTextFile } from "@tauri-apps/plugin-fs";
 import { useState } from "react";
 import { useScheduleCtx } from "./provider";
-import { Case } from "@/models/tcModel";
+import { Case, getTimeList, TcUnit } from "@/models/tcModel";
+
+const getTcMap = (result: Case[]): Map<string, TcUnit[]> => {
+  const dates = new Set(result.map((item) => item.날짜));
+  const tcMap = new Map<string, TcUnit[]>();
+
+  for (let date of dates) {
+    // 해당 날짜의 사건 리스트
+    const casesOfTheDate = result.filter((item) => item.날짜 == date);
+    // tcUnit으로 변환
+    const tcUnitsOfTheDate = getTimeList().map((time, i) => {
+      // 시각이 같은 사건들
+      const itemsOfTheTime = casesOfTheDate.filter((item) => item.시각 == time);
+      const gt10m = itemsOfTheTime.find((item) => item.소요예정시간);
+      const span = gt10m ? Number.parseInt(gt10m.소요예정시간) / 10 : 1;
+      return new TcUnit(i, date, time, itemsOfTheTime.length, span);
+    });
+
+    const bigSpanCases = tcUnitsOfTheDate.filter((unit) => unit.span > 1);
+    for (let item of bigSpanCases) {
+      for (let i = item.idx + 1; i < item.idx + item.span; i++) {
+        tcUnitsOfTheDate[i].isHidden = true;
+      }
+    }
+
+    tcMap.set(date, tcUnitsOfTheDate);
+  }
+  return tcMap;
+};
 
 export default function Buttons() {
   const [msg, setMsg] = useState("default text");
   const [excel, setExcel] = useState("excel file contents");
-  const tcList = useScheduleCtx().tcList;
+  const { tcList, setTcList } = useScheduleCtx();
 
   const readSavedHandler = async () => {
     const filePath = await open({ multiple: false, directory: false });
@@ -16,12 +44,19 @@ export default function Buttons() {
     const result = await invoke<string>("read_file_command", { filePath });
     setMsg(result);
   };
+
   const readExcelHandler = async () => {
     const filePath = await open({ multiple: false, directory: false });
     if (!filePath) return;
     const result = await invoke<Case[]>("read_data_from_excel", { filePath });
-    setExcel(result[10].사건명);
+    const filteredResult = result.filter(
+      (item) => item.사건번호.includes("고단") || item.사건번호.includes("고정")
+    );
+    const tcMap = getTcMap(filteredResult);
+    // console.log(tcMap);
+    setTcList(tcMap.get([...tcMap.keys()][1])!);
   };
+
   const saveHandler = async () => {
     // try {
     //   await writeTextFile("testFile.txt", "Hello World!!!", {

@@ -25,15 +25,17 @@ export function CaseNumCell({ tc }: { tc: TcUnit }) {
         }
       : undefined;
 
+  const id = [tc.date, tc.time].join("-");
+
   return (
     <div
-      id={tc.time}
+      id={id}
       className={className}
       style={style}
       onClick={cellClickHandler}
       onContextMenu={contextHandler}
     >
-      {tc.caseNum}
+      {tc.count}
     </div>
   );
 }

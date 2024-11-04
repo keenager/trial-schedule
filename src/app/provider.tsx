@@ -3,6 +3,7 @@ import React, { createContext, useContext } from "react";
 
 const ScheduleContext = createContext<UseScheduleReturnType>({
   tcList: [],
+  setTcList: () => {},
   undo: () => {},
   cellClickHandler: () => {},
   contextHandler: () => {},

@@ -10,25 +10,27 @@ export interface Case {
 
 export class TcUnit {
   constructor(
+    public idx: number,
     public date: string,
     public time: string,
-    public category: string,
-    public caseNum: number,
-    public personName: string,
-    public caseName: string,
+    // public category: string,
+    // public caseNum: string,
+    // public personName: string,
+    // public caseName: string,
+    public count: number = 0,
     public span: number = 1,
-    public idx: number = 0,
     public isSelected: boolean = false,
     public isHidden: boolean = false
   ) {
+    this.idx = idx;
     this.date = date;
     this.time = time;
-    this.category = category;
-    this.caseNum = caseNum;
-    this.personName = personName;
-    this.caseName = caseName;
+    // this.category = category;
+    // this.caseNum = caseNum;
+    // this.personName = personName;
+    // this.caseName = caseName;
+    this.count = count;
     this.span = span;
-    this.idx = idx;
     this.isSelected = isSelected;
     this.isHidden = isHidden;
   }
