@@ -1,12 +1,17 @@
 import { Dispatch, SetStateAction, useState } from "react";
-import { getTimeList, TcUnit } from "../models/tcModel";
+import { Case, getTimeList, TcUnit } from "../models/tcModel";
 
 export type UseScheduleReturnType = {
   tcList: TcUnit[];
   setTcList: Dispatch<SetStateAction<TcUnit[]>>;
+  caseList: Case[];
+  setCaseList: Dispatch<SetStateAction<Case[]>>;
+  targetCases: Case[];
+  setTargetCases: Dispatch<SetStateAction<Case[]>>;
   undo: (start: number, end: number, list: TcUnit[]) => void;
   cellClickHandler: (e: React.MouseEvent<HTMLDivElement>) => void;
   contextHandler: (e: React.MouseEvent<HTMLDivElement>) => void;
+  caseDetailHandler: (e: React.MouseEvent<HTMLDivElement>) => void;
   mergeHandler: () => void;
   breakHandler: () => void;
   cancelHandler: () => void;
@@ -39,6 +44,9 @@ export default function useSchedule(): UseScheduleReturnType {
   const [firstIdx, setfirstIdx] = useState(0);
   const [secondIdx, setsecondIdx] = useState(0);
   const [cellClickNum, setCellClickNum] = useState(0);
+
+  const [caseList, setCaseList] = useState<Case[]>([]);
+  const [targetCases, setTargetCases] = useState<Case[]>([]);
 
   function undo(start: number, end: number, list: TcUnit[]) {
     const [min, max] = minmax(start, end);
@@ -103,6 +111,26 @@ export default function useSchedule(): UseScheduleReturnType {
     contextMenu.style.display = "block";
   };
 
+  const caseDetailHandler = (e: React.MouseEvent<HTMLDivElement>) => {
+    e.stopPropagation();
+
+    const caseDetailDiv = document.getElementById("case-detail")!;
+    const targetTc = tcList.filter(
+      (tc) => tc.date + "-" + tc.time === e.currentTarget.id
+    );
+    if (targetTc[0].count === 0) {
+      caseDetailDiv.style.display = "none";
+      return;
+    }
+    const targetCases = caseList.filter(
+      (c) => c.날짜 === targetTc[0].date && c.시각 === targetTc[0].time
+    );
+    caseDetailDiv.style.left = e.clientX + "px";
+    caseDetailDiv.style.top = e.clientY + "px";
+    caseDetailDiv.style.display = "block";
+    setTargetCases(targetCases);
+  };
+
   const mergeHandler = () => {
     const [min, max] = minmax(firstIdx, secondIdx);
 
@@ -151,9 +179,14 @@ export default function useSchedule(): UseScheduleReturnType {
   return {
     tcList,
     setTcList,
+    caseList,
+    setCaseList,
+    targetCases,
+    setTargetCases,
     undo,
     cellClickHandler,
     contextHandler,
+    caseDetailHandler,
     mergeHandler,
     breakHandler,
     cancelHandler,
