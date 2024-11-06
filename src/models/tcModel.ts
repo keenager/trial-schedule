@@ -13,11 +13,7 @@ export class TcUnit {
     public idx: number,
     public date: string,
     public time: string,
-    // public category: string,
-    // public caseNum: string,
-    // public personName: string,
-    // public caseName: string,
-    public count: number = 0,
+    public count: number | "↑" = 0,
     public span: number = 1,
     public isSelected: boolean = false,
     public isHidden: boolean = false
@@ -25,10 +21,6 @@ export class TcUnit {
     this.idx = idx;
     this.date = date;
     this.time = time;
-    // this.category = category;
-    // this.caseNum = caseNum;
-    // this.personName = personName;
-    // this.caseName = caseName;
     this.count = count;
     this.span = span;
     this.isSelected = isSelected;

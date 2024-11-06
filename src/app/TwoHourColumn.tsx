@@ -1,5 +1,5 @@
-import { CaseNumCell, TimeCell } from "./Cells";
 import { TcUnit } from "@/models/tcModel";
+import { CaseNumCell, TimeCell } from "./Cells";
 
 export default function TwoHourColumn({ div }: { div: TcUnit[] }) {
   return (

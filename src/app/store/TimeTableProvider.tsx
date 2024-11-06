@@ -1,13 +1,7 @@
 import useSchedule, { UseScheduleReturnType } from "@/lib/useSchedule";
 import React, { createContext, useContext } from "react";
 
-const ScheduleContext = createContext<UseScheduleReturnType>({
-  tcList: [],
-  setTcList: () => {},
-  caseList: [],
-  setCaseList: () => {},
-  targetCases: [],
-  setTargetCases: () => {},
+const TimeTableContext = createContext<UseScheduleReturnType>({
   undo: () => {},
   cellClickHandler: () => {},
   contextHandler: () => {},
@@ -17,18 +11,18 @@ const ScheduleContext = createContext<UseScheduleReturnType>({
   cancelHandler: () => {},
 });
 
-export default function CaseScheduleProvider({
+export default function TimeTableProvider({
   children,
 }: {
   children: React.ReactNode;
 }) {
   return (
-    <ScheduleContext.Provider value={useSchedule()}>
+    <TimeTableContext.Provider value={useSchedule()}>
       {children}
-    </ScheduleContext.Provider>
+    </TimeTableContext.Provider>
   );
 }
 
-export function useScheduleCtx() {
-  return useContext(ScheduleContext);
+export function useTimeTableCtx() {
+  return useContext(TimeTableContext);
 }

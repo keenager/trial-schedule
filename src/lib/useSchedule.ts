@@ -1,13 +1,8 @@
-import { Dispatch, SetStateAction, useState } from "react";
-import { Case, getTimeList, TcUnit } from "../models/tcModel";
+import { useState } from "react";
+import { TcUnit } from "../models/tcModel";
+import { useDataCtx } from "@/app/store/DataProvider";
 
 export type UseScheduleReturnType = {
-  tcList: TcUnit[];
-  setTcList: Dispatch<SetStateAction<TcUnit[]>>;
-  caseList: Case[];
-  setCaseList: Dispatch<SetStateAction<Case[]>>;
-  targetCases: Case[];
-  setTargetCases: Dispatch<SetStateAction<Case[]>>;
   undo: (start: number, end: number, list: TcUnit[]) => void;
   cellClickHandler: (e: React.MouseEvent<HTMLDivElement>) => void;
   contextHandler: (e: React.MouseEvent<HTMLDivElement>) => void;
@@ -36,17 +31,11 @@ function merge(start: number, end: number, list: TcUnit[]) {
 }
 
 export default function useSchedule(): UseScheduleReturnType {
-  const [tcList, setTcList] = useState(
-    getTimeList().map(
-      (time, i) => new TcUnit(i, new Date().toLocaleDateString(), time, 0)
-    )
-  );
+  const { tcList, setTcList, caseList, setTargetCases } = useDataCtx();
+
   const [firstIdx, setfirstIdx] = useState(0);
   const [secondIdx, setsecondIdx] = useState(0);
   const [cellClickNum, setCellClickNum] = useState(0);
-
-  const [caseList, setCaseList] = useState<Case[]>([]);
-  const [targetCases, setTargetCases] = useState<Case[]>([]);
 
   function undo(start: number, end: number, list: TcUnit[]) {
     const [min, max] = minmax(start, end);
@@ -118,7 +107,7 @@ export default function useSchedule(): UseScheduleReturnType {
     const targetTc = tcList.filter(
       (tc) => tc.date + "-" + tc.time === e.currentTarget.id
     );
-    if (targetTc[0].count === 0) {
+    if (targetTc[0].count === 0 || targetTc[0].count === "↑") {
       caseDetailDiv.style.display = "none";
       return;
     }
@@ -177,12 +166,6 @@ export default function useSchedule(): UseScheduleReturnType {
   }
 
   return {
-    tcList,
-    setTcList,
-    caseList,
-    setCaseList,
-    targetCases,
-    setTargetCases,
     undo,
     cellClickHandler,
     contextHandler,

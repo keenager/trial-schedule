@@ -1,6 +1,7 @@
-import { Case } from "@/models/tcModel";
+import { useDataCtx } from "./store/DataProvider";
 
-export default function CaseDetail({ targetCases }: { targetCases: Case[] }) {
+export default function CaseDetail() {
+  const { targetCases } = useDataCtx();
   return (
     <div
       id="case-detail"

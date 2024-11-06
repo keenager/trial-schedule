@@ -1,6 +1,6 @@
-import { useScheduleCtx } from "./provider";
-import { TcUnit } from "@/models/tcModel";
 import React from "react";
+import { useTimeTableCtx } from "./store/TimeTableProvider";
+import { TcUnit } from "@/models/tcModel";
 
 export function TimeCell({ time }: { time: string }) {
   return (
@@ -17,16 +17,18 @@ export function TimeCell({ time }: { time: string }) {
 
 export function CaseNumCell({ tc }: { tc: TcUnit }) {
   const { cellClickHandler, contextHandler, caseDetailHandler } =
-    useScheduleCtx();
+    useTimeTableCtx();
 
-  const startLine = (tc.idx % 12) + 1;
-  const endLine = startLine + tc.span;
+  const id = [tc.date, tc.time].join("-");
 
   const className =
     "bg-base-100 border border-slate-300 text-center content-center" +
     (tc.isSelected ? " bg-red-500" : "") +
     // (tc.span > 1 ? ` row-start-${startLine} row-end-${endLine}` : "") +
     (tc.isHidden ? " hidden" : "");
+
+  const startLine = (tc.idx % 12) + 1;
+  const endLine = startLine + tc.span;
 
   const style =
     tc.span > 1
@@ -35,8 +37,6 @@ export function CaseNumCell({ tc }: { tc: TcUnit }) {
           gridRowEnd: endLine,
         }
       : undefined;
-
-  const id = [tc.date, tc.time].join("-");
 
   return (
     <div
@@ -47,7 +47,7 @@ export function CaseNumCell({ tc }: { tc: TcUnit }) {
       onContextMenu={contextHandler}
       onMouseOver={caseDetailHandler}
     >
-      {tc.count}
+      {tc.count === 0 ? "" : tc.count}
     </div>
   );
 }

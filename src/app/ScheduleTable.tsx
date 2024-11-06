@@ -1,11 +1,9 @@
 import React from "react";
+import { useDataCtx } from "./store/DataProvider";
 import TwoHourColumn from "./TwoHourColumn";
-import { useScheduleCtx } from "./provider";
-import CaseDetail from "./CaseDetail";
-import ContextMenu from "./ContextMenu";
 
 export default function ScheduleTable() {
-  const { tcList, targetCases } = useScheduleCtx();
+  const { tcList } = useDataCtx();
 
   const clickHandler = () => {
     document.getElementById("context-menu")!.style.display = "none";
@@ -18,17 +16,13 @@ export default function ScheduleTable() {
   }
 
   return (
-    <>
-      <div
-        className="grow grid grid-cols-3 grid-rows-1 grid-flow-col gap-x-1 gap-y-3"
-        onClick={clickHandler}
-      >
-        {dividedList.map((div, i) => (
-          <TwoHourColumn key={i} div={div} />
-        ))}
-      </div>
-      <ContextMenu />
-      <CaseDetail targetCases={targetCases} />
-    </>
+    <div
+      className="grow grid grid-cols-3 grid-rows-1 grid-flow-col gap-x-1 gap-y-3"
+      onClick={clickHandler}
+    >
+      {dividedList.map((div, i) => (
+        <TwoHourColumn key={i} div={div} />
+      ))}
+    </div>
   );
 }

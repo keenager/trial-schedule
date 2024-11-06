@@ -1,16 +1,18 @@
 "use client";
 
-import CaseScheduleProvider from "./provider";
-import MainTitle from "@/app/ui/main-title";
-import ScheduleTable from "./ScheduleTable";
-import Buttons from "./Buttons";
 import { useEffect } from "react";
+import DataProvider from "./store/DataProvider";
+import TimeTableProvider from "./store/TimeTableProvider";
+import MainTitle from "@/app/ui/main-title";
+import Buttons from "./Buttons";
+import ScheduleTable from "./ScheduleTable";
+import ContextMenu from "./ContextMenu";
+import CaseDetail from "./CaseDetail";
 
 export default function Home() {
-  //TODO:
-  // 날짜 선택 기능, 모든 날짜 보여주는 기능
-  // 엑셀 파일 불러올때 두개 컬럼 걸쳐 있는 경우도 제대로 처리되는지 확인.
-  // 디자인 개선
+  // TODO: 엑셀 파일 불러올 때 에러 처리, 토스트 메시지로 결과 알려주기.
+  // 사건정보 박스 디자인 개선
+  // 하루, 이틀, 전체 보기 옵션
   useEffect(() => {
     document.querySelector("div:has(h2)")!.addEventListener("mouseover", () => {
       document.getElementById("case-detail")!.style.display = "none";
@@ -18,10 +20,16 @@ export default function Home() {
   }, []);
 
   return (
-    <CaseScheduleProvider>
-      <MainTitle>기일부</MainTitle>
-      <Buttons />
-      <ScheduleTable />
-    </CaseScheduleProvider>
+    <DataProvider>
+      <TimeTableProvider>
+        {/* 기본 컴포넌트 */}
+        <MainTitle>기일부</MainTitle>
+        <Buttons />
+        <ScheduleTable />
+        {/* 유틸 컴포넌트 */}
+        <ContextMenu />
+        <CaseDetail />
+      </TimeTableProvider>
+    </DataProvider>
   );
 }
