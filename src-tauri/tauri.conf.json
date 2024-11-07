@@ -12,7 +12,8 @@
   "app": {
     "windows": [
       {
-        "title": "tauri-app",
+        "title": "기일부",
+        "center": true,
         "width": 800,
         "height": 600,
         "resizable": true,

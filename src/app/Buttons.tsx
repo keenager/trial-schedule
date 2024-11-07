@@ -1,10 +1,11 @@
 import React from "react";
 import { useDataCtx } from "./store/DataProvider";
 import useButtons from "@/lib/useButtons";
+import Toast from "./Toast";
 
 export default function Buttons() {
   const { dateList } = useDataCtx();
-  const { readExcelHandler, dateChangeHandler } = useButtons();
+  const { errMsg, readExcelHandler, dateChangeHandler } = useButtons();
 
   return (
     <div
@@ -27,6 +28,18 @@ export default function Buttons() {
           <option key={date}>{date}</option>
         ))}
       </select>
+
+      <select
+        className="select select-sm select-bordered select-accent max-w-xs mr-3"
+        defaultValue="날짜 갯수"
+        onChange={() => {}}
+      >
+        <option disabled>날짜 갯수</option>
+        {[1, 2, 4, 6, 8].map((n) => (
+          <option key={n}>{n}</option>
+        ))}
+      </select>
+
       <button
         className="btn btn-sm btn-accent"
         onClick={() => {
@@ -35,6 +48,7 @@ export default function Buttons() {
       >
         출력
       </button>
+      <Toast>{errMsg}</Toast>
     </div>
   );
 }
