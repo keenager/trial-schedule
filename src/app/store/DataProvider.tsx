@@ -7,15 +7,20 @@ import React, {
   useState,
 } from "react";
 
+type dateListType = {
+  date: string;
+  isSelected: boolean;
+}[];
+
 type DataCtxType = {
   caseList: Case[];
   setCaseList: Dispatch<SetStateAction<Case[]>>;
-  dateList: string[];
-  setDateList: Dispatch<SetStateAction<string[]>>;
+  dateList: dateListType;
+  setDateList: Dispatch<SetStateAction<dateListType>>;
   selectedDate: string;
   setSelectedDate: Dispatch<SetStateAction<string>>;
-  tcList: TcUnit[];
-  setTcList: Dispatch<SetStateAction<TcUnit[]>>;
+  tcObj: { [key: string]: TcUnit[] };
+  setTcObj: Dispatch<SetStateAction<{ [key: string]: TcUnit[] }>>;
   getTcListOf: (date: string) => TcUnit[];
   targetCases: Case[];
   setTargetCases: Dispatch<SetStateAction<Case[]>>;
@@ -28,8 +33,8 @@ const DataContext = createContext<DataCtxType>({
   setDateList: () => {},
   selectedDate: "",
   setSelectedDate: () => {},
-  tcList: [],
-  setTcList: () => {},
+  tcObj: { "": [] },
+  setTcObj: () => {},
   getTcListOf: () => [],
   targetCases: [],
   setTargetCases: () => {},
@@ -41,13 +46,13 @@ export default function DataProvider({
   children: React.ReactNode;
 }) {
   const [caseList, setCaseList] = useState<Case[]>([]);
-  const [dateList, setDateList] = useState<string[]>([]);
+  const [dateList, setDateList] = useState<dateListType>([]);
   const [selectedDate, setSelectedDate] = useState<string>("");
-  const [tcList, setTcList] = useState(
-    getTimeList().map(
-      (time, i) => new TcUnit(i, new Date().toLocaleDateString(), time, 0)
-    )
-  );
+  const today = new Date().toLocaleDateString();
+  const [tcObj, setTcObj] = useState({
+    [today]: getTimeList().map((time, i) => new TcUnit(i, today, time, 0)),
+  });
+
   const getTcListOf = (date: string): TcUnit[] => {
     // 해당 날짜의 사건 리스트
     const casesOfTheDate = caseList.filter((item) => item.날짜 == date);
@@ -85,6 +90,7 @@ export default function DataProvider({
     // }
     return tcList;
   };
+
   const [targetCases, setTargetCases] = useState<Case[]>([]);
 
   return (
@@ -96,8 +102,8 @@ export default function DataProvider({
         setDateList,
         selectedDate,
         setSelectedDate,
-        tcList,
-        setTcList,
+        tcObj,
+        setTcObj,
         getTcListOf,
         targetCases,
         setTargetCases,

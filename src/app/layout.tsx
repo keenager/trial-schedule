@@ -13,7 +13,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ko">
-      <body className="h-dvh bg-white dark:bg-gray-900">
+      <body className="bg-white dark:bg-gray-900">
         {/* <header className="fixed left-0 right-0 top-0 z-10 dark:bg-gray-900">
           
         </header> */}

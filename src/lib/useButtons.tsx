@@ -5,7 +5,7 @@ import { useDataCtx } from "@/app/store/DataProvider";
 import { useState } from "react";
 
 export default function useButtons() {
-  const { setCaseList, setDateList, setTcList, getTcListOf } = useDataCtx();
+  const { setCaseList } = useDataCtx();
   const [errMsg, setErrMsg] = useState("");
 
   const readExcelHandler = async () => {
@@ -25,16 +25,30 @@ export default function useButtons() {
     const filteredCaseList = result.filter(
       (item) => item.사건번호.includes("고단") || item.사건번호.includes("고정")
     );
-    document.querySelector("select")!.focus();
     setCaseList(filteredCaseList);
-    setDateList([...new Set(filteredCaseList.map((item) => item.날짜))]);
+
+    // const dateList = [...new Set(filteredCaseList.map((item) => item.날짜))];
+
+    // setDateList(
+    //   dateList.map((date) => {
+    //     return { date, isSelected: true };
+    //   })
+    // );
+
+    // setTcObj((prev) => {
+    //   const tcObj: { [key: string]: TcUnit[] } = {};
+    //   for (const date of dateList) {
+    //     tcObj[date] = getTcListOf(date);
+    //   }
+    //   return tcObj;
+    // });
   };
 
-  const dateChangeHandler = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const selectedDate = e.currentTarget.value;
-    const tcList = getTcListOf(selectedDate);
-    setTcList(tcList);
-  };
+  // const dateChangeHandler = (e: React.ChangeEvent<HTMLSelectElement>) => {
+  //   const selectedDate = e.currentTarget.value;
+  //   const tcList = getTcListOf(selectedDate);
+  //   setTcList(tcList);
+  // };
 
-  return { errMsg, readExcelHandler, dateChangeHandler };
+  return { errMsg, readExcelHandler };
 }

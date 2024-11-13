@@ -34,35 +34,42 @@ fn read_file_command(file_path: String) -> String{
 
 #[tauri::command]
 fn read_data_from_excel(file_path: String) -> Vec<HashMap<String, String>>{
+    let mut data_list: Vec<HashMap<String, String>> = Vec::new();
     let mut workbook: Xlsx<_> = open_workbook(file_path).unwrap();
-    let mut data: Vec<HashMap<String, String>> = Vec::new();
-
-    if let Ok(r) = workbook.worksheet_range("오늘기준 월간일정") {
-        for row in r.rows() {
+    let sheets: Vec<String> = workbook.sheet_names();
+    
+    match workbook.worksheet_range(&sheets[0]) {
+        Ok(data) => {
+            for row in data.rows() {
+                let mut val: HashMap<String, String> = HashMap::new();
+                val.insert("날짜".to_string(), row[0].to_string());
+                val.insert("시각".to_string(), row[1].to_string());
+                val.insert("기일종류".to_string(), row[3].to_string());
+                val.insert("사건번호".to_string(), row[4].to_string());
+                val.insert("피고인".to_string(), row[6].to_string());
+                val.insert("사건명".to_string(), row[7].to_string());
+                val.insert("소요예정시간".to_string(), row[9].to_string());
+                data_list.push(val);
+            }
+            // println!("{:?}", sheets);
+            data_list
+        },
+        Err(e) => {
             let mut val: HashMap<String, String> = HashMap::new();
-            val.insert("날짜".to_string(), row[0].to_string());
-            val.insert("시각".to_string(), row[1].to_string());
-            val.insert("기일종류".to_string(), row[3].to_string());
-            val.insert("사건번호".to_string(), row[4].to_string());
-            val.insert("피고인".to_string(), row[6].to_string());
-            val.insert("사건명".to_string(), row[7].to_string());
-            val.insert("소요예정시간".to_string(), row[9].to_string());
-            data.push(val);
+            val.insert("errMsg".to_string(), e.to_string());
+            data_list.push(val);
+            data_list
         }
     }
-    println!("{:?}", data);
-    data
+
 }
 
 #[tauri::command]
 fn save_file_command(file_path: String, contents: String) -> String {
     println!("path: {}, contents: {}", &file_path, contents);
-
-    
     
     let file_result: Result<File, Error> = File::create(file_path.clone());
     
-
     match file_result {
         Ok(_) => {
             let save_result: Result<(), Error> = write(file_path, contents);
