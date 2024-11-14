@@ -27,8 +27,8 @@ export default function ScheduleSection() {
   return (
     <section className="schedule">
       {dateList.map(
-        (item) =>
-          item.isSelected && <TimeTable key={item.date} date={item.date} />
+        (item, i) =>
+          item.isSelected && <TimeTable key={i} idx={i} date={item.date} />
       )}
     </section>
   );

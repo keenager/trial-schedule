@@ -2,7 +2,13 @@ import React from "react";
 import { useDataCtx } from "./store/DataProvider";
 import TwoHourColumn from "./TwoHourColumn";
 
-export default function TimeTable({ date }: { date: string }) {
+export default function TimeTable({
+  idx,
+  date,
+}: {
+  idx: number;
+  date: string;
+}) {
   const { tcObj } = useDataCtx();
   const tcList = tcObj[date];
 
@@ -21,8 +27,8 @@ export default function TimeTable({ date }: { date: string }) {
   }
 
   return (
-    <section className="timeTable my-5">
-      <h3 className="text-center">
+    <section className={`timeTable my-10 ${idx % 2 && "break-after-page"}`}>
+      <h3 className="text-center text-lg font-bold font-sans mb-1">
         {date} ({weekDay})
       </h3>
       <div

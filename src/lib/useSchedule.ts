@@ -112,8 +112,8 @@ export default function useSchedule(): UseScheduleReturnType {
     }
 
     const contextMenu = document.getElementById("context-menu")!;
-    contextMenu.style.left = e.clientX + "px";
-    contextMenu.style.top = e.clientY + "px";
+    contextMenu.style.left = e.pageX + "px";
+    contextMenu.style.top = e.pageY + "px";
     contextMenu.style.display = "block";
   };
 
@@ -134,7 +134,15 @@ export default function useSchedule(): UseScheduleReturnType {
     const targetCases = caseList.filter(
       (c) => c.날짜 === targetTc[0].date && c.시각 === targetTc[0].time
     );
-    caseDetailDiv.style.left = e.pageX + "px";
+    console.log("e.pageX: ", e.pageX);
+    console.log("e.pageY: ", e.pageY);
+
+    caseDetailDiv.style.left =
+      (e.pageX > window.innerWidth * 0.66
+        ? window.innerWidth * 0.5
+        : e.pageX > window.innerWidth * 0.33
+        ? window.innerWidth * 0.33
+        : e.pageX) + "px";
     caseDetailDiv.style.top = e.pageY + "px";
     caseDetailDiv.style.display = "block";
     setTargetCases(targetCases);

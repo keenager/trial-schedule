@@ -23,7 +23,7 @@ export function CaseNumCell({ tc }: { tc: TcUnit }) {
 
   const className =
     "bg-base-100 border border-slate-300 text-center content-center" +
-    (tc.isSelected ? " bg-red-500" : "") +
+    (tc.isSelected ? " bg-rose-100" : "") +
     // (tc.span > 1 ? ` row-start-${startLine} row-end-${endLine}` : "") +
     (tc.isHidden ? " hidden" : "");
 
