@@ -134,8 +134,6 @@ export default function useSchedule(): UseScheduleReturnType {
     const targetCases = caseList.filter(
       (c) => c.날짜 === targetTc[0].date && c.시각 === targetTc[0].time
     );
-    console.log("e.pageX: ", e.pageX);
-    console.log("e.pageY: ", e.pageY);
 
     caseDetailDiv.style.left =
       (e.pageX > window.innerWidth * 0.66

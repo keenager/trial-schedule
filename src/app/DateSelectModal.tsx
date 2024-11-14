@@ -1,12 +1,32 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useDataCtx } from "./store/DataProvider";
 
 export default function DateSelectModal() {
   const { dateList, setDateList } = useDataCtx();
-  const newList = [...dateList];
+  const [checkList, setCheckList] = useState<boolean[]>([]);
+  useEffect(() => {
+    setCheckList(dateList.map((item) => item.isSelected));
+  }, [dateList]);
 
-  const changeHandler = (i: number, e: React.ChangeEvent<HTMLInputElement>) => {
-    newList[i].isSelected = e.currentTarget.checked;
+  const toggleHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setCheckList([...checkList].fill(e.currentTarget.checked));
+  };
+
+  const changeHandler = (e: React.ChangeEvent<HTMLInputElement>, i: number) => {
+    const newCheckList = [...checkList];
+    newCheckList[i] = e.currentTarget.checked;
+    setCheckList(newCheckList);
+  };
+
+  const refreshHandler = () => {
+    const newDateList = checkList.map((val, i) => {
+      const temp = { ...dateList[i] };
+      temp.isSelected = val;
+      return temp;
+    });
+    setDateList(newDateList);
+    const modal: any = document.getElementById("date_select_modal")!;
+    modal.close();
   };
 
   return (
@@ -30,22 +50,25 @@ export default function DateSelectModal() {
                 <input
                   type="checkbox"
                   className="checkbox checkbox-accent"
-                  defaultChecked={val.isSelected}
-                  onChange={changeHandler.bind(null, i)}
+                  checked={checkList[i] || false}
+                  onChange={(e) => changeHandler(e, i)}
                 />
               </label>
             </div>
           ))}
         </div>
-        <div className="flex justify-end mt-3">
-          <button
-            className="btn btn-sm btn-accent"
-            onClick={() => {
-              setDateList(newList);
-              const modal: any = document.getElementById("date_select_modal")!;
-              modal.close();
-            }}
-          >
+        <div className="flex justify-end gap-3 mt-3">
+          <label className="label cursor-pointer">
+            <span className="label-text mr-1">전체</span>
+            <input
+              type="checkbox"
+              className="toggle"
+              defaultChecked
+              onChange={toggleHandler}
+            />
+          </label>
+          {/* <button className="btn btn-sm btn-accent">전체</button> */}
+          <button className="btn btn-sm btn-accent" onClick={refreshHandler}>
             새로고침
           </button>
         </div>

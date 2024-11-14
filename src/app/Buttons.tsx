@@ -9,7 +9,7 @@ export default function Buttons() {
 
   return (
     <section
-      className="flex justify-end items-center gap-3"
+      className="no-print flex justify-end items-center gap-3"
       onMouseOver={() => {
         document.getElementById("case-detail")!.style.display = "none";
       }}
