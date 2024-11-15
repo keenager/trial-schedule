@@ -1,8 +1,8 @@
 {
   "$schema": "../node_modules/@tauri-apps/cli/config.schema.json",
-  "productName": "tauri-app",
+  "productName": "trial-schedule-app",
   "version": "0.1.0",
-  "identifier": "com.tauri-app.app",
+  "identifier": "com.trial-schedule-app.app",
   "build": {
     "frontendDist": "../out",
     "devUrl": "http://localhost:3000",

@@ -17,8 +17,8 @@ type DataCtxType = {
   setCaseList: Dispatch<SetStateAction<Case[]>>;
   dateList: dateListType;
   setDateList: Dispatch<SetStateAction<dateListType>>;
-  selectedDate: string;
-  setSelectedDate: Dispatch<SetStateAction<string>>;
+  // selectedDate: string;
+  // setSelectedDate: Dispatch<SetStateAction<string>>;
   tcObj: { [key: string]: TcUnit[] };
   setTcObj: Dispatch<SetStateAction<{ [key: string]: TcUnit[] }>>;
   getTcListOf: (date: string) => TcUnit[];
@@ -31,8 +31,8 @@ const DataContext = createContext<DataCtxType>({
   setCaseList: () => {},
   dateList: [],
   setDateList: () => {},
-  selectedDate: "",
-  setSelectedDate: () => {},
+  // selectedDate: "",
+  // setSelectedDate: () => {},
   tcObj: { "": [] },
   setTcObj: () => {},
   getTcListOf: () => [],
@@ -47,7 +47,7 @@ export default function DataProvider({
 }) {
   const [caseList, setCaseList] = useState<Case[]>([]);
   const [dateList, setDateList] = useState<dateListType>([]);
-  const [selectedDate, setSelectedDate] = useState<string>("");
+  // const [selectedDate, setSelectedDate] = useState<string>("");
   const today = new Date().toLocaleDateString();
   const [tcObj, setTcObj] = useState({
     [today]: getTimeList().map((time, i) => new TcUnit(i, today, time, 0)),
@@ -100,8 +100,8 @@ export default function DataProvider({
         setCaseList,
         dateList,
         setDateList,
-        selectedDate,
-        setSelectedDate,
+        // selectedDate,
+        // setSelectedDate,
         tcObj,
         setTcObj,
         getTcListOf,

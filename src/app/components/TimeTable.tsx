@@ -1,5 +1,5 @@
 import React from "react";
-import { useDataCtx } from "./store/DataProvider";
+import { useDataCtx } from "../store/DataProvider";
 import TwoHourColumn from "./TwoHourColumn";
 
 export default function TimeTable({

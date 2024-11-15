@@ -1,7 +1,7 @@
 import React from "react";
 import useButtons from "@/lib/useButtons";
-import Toast from "./Toast";
-import DateSelectModal from "./DateSelectModal";
+import Toast from "./ui/Toast";
+import DateSelectModal from "./components/DateSelectModal";
 
 export default function Buttons() {
   // const { dateList } = useDataCtx();
@@ -17,28 +17,6 @@ export default function Buttons() {
       <button className="btn btn-sm btn-accent" onClick={readExcelHandler}>
         엑셀 파일 불러오기
       </button>
-
-      {/* <select
-        className="select select-sm select-bordered select-accent max-w-xs"
-        defaultValue="날짜 선택"
-        onChange={dateChangeHandler}
-      >
-        <option disabled>날짜 선택</option>
-        {dateList.map((date) => (
-          <option key={date}>{date}</option>
-        ))}
-      </select> */}
-
-      {/* <select
-        className="select select-sm select-bordered select-accent max-w-xs"
-        defaultValue="날짜 갯수"
-        onChange={() => {}}
-      >
-        <option disabled>날짜 갯수</option>
-        {[1, 2, 4, 6, 8].map((n) => (
-          <option key={n}>{n}</option>
-        ))}
-      </select> */}
 
       <button
         className="btn btn-sm btn-accent"

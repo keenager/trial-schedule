@@ -1,4 +1,4 @@
-import { useTimeTableCtx } from "./store/TimeTableProvider";
+import { useTimeTableCtx } from "@/app/store/TimeTableProvider";
 
 export default function ContextMenu() {
   const { mergeHandler, breakHandler, cancelHandler } = useTimeTableCtx();

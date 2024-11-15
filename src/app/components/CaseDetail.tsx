@@ -1,4 +1,4 @@
-import { useDataCtx } from "./store/DataProvider";
+import { useDataCtx } from "@/app/store/DataProvider";
 
 export default function CaseDetail() {
   const { targetCases } = useDataCtx();

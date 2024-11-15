@@ -26,29 +26,7 @@ export default function useButtons() {
       (item) => item.사건번호.includes("고단") || item.사건번호.includes("고정")
     );
     setCaseList(filteredCaseList);
-
-    // const dateList = [...new Set(filteredCaseList.map((item) => item.날짜))];
-
-    // setDateList(
-    //   dateList.map((date) => {
-    //     return { date, isSelected: true };
-    //   })
-    // );
-
-    // setTcObj((prev) => {
-    //   const tcObj: { [key: string]: TcUnit[] } = {};
-    //   for (const date of dateList) {
-    //     tcObj[date] = getTcListOf(date);
-    //   }
-    //   return tcObj;
-    // });
   };
-
-  // const dateChangeHandler = (e: React.ChangeEvent<HTMLSelectElement>) => {
-  //   const selectedDate = e.currentTarget.value;
-  //   const tcList = getTcListOf(selectedDate);
-  //   setTcList(tcList);
-  // };
 
   return { errMsg, readExcelHandler };
 }

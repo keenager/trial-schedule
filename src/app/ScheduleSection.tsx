@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useDataCtx } from "./store/DataProvider";
-import TimeTable from "./TimeTable";
+import TimeTable from "./components/TimeTable";
 import { TcUnit } from "@/models/tcModel";
 
 export default function ScheduleSection() {

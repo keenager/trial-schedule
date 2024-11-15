@@ -1,5 +1,5 @@
 import React from "react";
-import { useTimeTableCtx } from "./store/TimeTableProvider";
+import { useTimeTableCtx } from "../store/TimeTableProvider";
 import { TcUnit } from "@/models/tcModel";
 
 export function TimeCell({ time }: { time: string }) {
@@ -23,7 +23,7 @@ export function CaseNumCell({ tc }: { tc: TcUnit }) {
 
   const className =
     "bg-base-100 border border-slate-300 text-center content-center" +
-    (tc.isSelected ? " bg-rose-100" : "") +
+    (tc.isSelected ? " bg-rose-200" : "") +
     // (tc.span > 1 ? ` row-start-${startLine} row-end-${endLine}` : "") +
     (tc.isHidden ? " hidden" : "");
 
