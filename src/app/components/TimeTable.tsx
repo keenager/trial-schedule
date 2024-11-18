@@ -1,24 +1,19 @@
 import React from "react";
-import { useDataCtx } from "../store/DataProvider";
+import { TcUnit } from "@/models/tcModel";
 import TwoHourColumn from "./TwoHourColumn";
 
 export default function TimeTable({
   idx,
   date,
+  tcList,
 }: {
   idx: number;
   date: string;
+  tcList: TcUnit[];
 }) {
-  const { tcObj } = useDataCtx();
-  const tcList = tcObj[date];
-
   const weekDay = ["일", "월", "화", "수", "목", "금", "토"][
     new Date(date).getDay()
   ];
-
-  const clickHandler = () => {
-    document.getElementById("context-menu")!.style.display = "none";
-  };
 
   // 세 덩어리로 쪼개기
   const dividedList = [];
@@ -33,7 +28,9 @@ export default function TimeTable({
       </h3>
       <div
         className="grow grid grid-cols-3 grid-rows-1 grid-flow-col gap-x-1 gap-y-3"
-        onClick={clickHandler}
+        onClick={() => {
+          document.getElementById("context-menu")!.style.display = "none";
+        }}
       >
         {dividedList.map((div, i) => (
           <TwoHourColumn key={i} div={div} />

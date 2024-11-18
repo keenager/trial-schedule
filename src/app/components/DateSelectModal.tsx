@@ -1,33 +1,11 @@
-import React, { useEffect, useState } from "react";
-import { useDataCtx } from "@/app/store/DataProvider";
+import React from "react";
+import { useCheckList, useCheckListDispatch } from "../store/CheckListProvider";
+import { useData } from "../store/DataProvider";
 
 export default function DateSelectModal() {
-  const { dateList, setDateList } = useDataCtx();
-  const [checkList, setCheckList] = useState<boolean[]>([]);
-  useEffect(() => {
-    setCheckList(dateList.map((item) => item.isSelected));
-  }, [dateList]);
-
-  const toggleHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setCheckList([...checkList].fill(e.currentTarget.checked));
-  };
-
-  const changeHandler = (e: React.ChangeEvent<HTMLInputElement>, i: number) => {
-    const newCheckList = [...checkList];
-    newCheckList[i] = e.currentTarget.checked;
-    setCheckList(newCheckList);
-  };
-
-  const refreshHandler = () => {
-    const newDateList = checkList.map((val, i) => {
-      const temp = { ...dateList[i] };
-      temp.isSelected = val;
-      return temp;
-    });
-    setDateList(newDateList);
-    const modal: any = document.getElementById("date_select_modal")!;
-    modal.close();
-  };
+  const data = useData();
+  const checkList = useCheckList();
+  const dispatch = useCheckListDispatch();
 
   return (
     <dialog id="date_select_modal" className="modal">
@@ -43,15 +21,21 @@ export default function DateSelectModal() {
         </button>
         <h3 className="font-bold text-lg text-center mb-3">날짜를 고르세요!</h3>
         <div className="flex flex-col items-center">
-          {dateList.map((val, i) => (
-            <div key={val.date} className="form-control w-64">
+          {data.dateList.map((date, idx) => (
+            <div key={date} className="form-control w-64">
               <label className="cursor-pointer label">
-                <span className="label-text">{val.date}</span>
+                <span className="label-text">{date}</span>
                 <input
                   type="checkbox"
                   className="checkbox checkbox-accent"
-                  checked={checkList[i] || false}
-                  onChange={(e) => changeHandler(e, i)}
+                  checked={checkList[idx] || false}
+                  onChange={(e) => {
+                    dispatch({
+                      type: "change",
+                      idx,
+                      isChecked: e.currentTarget.checked,
+                    });
+                  }}
                 />
               </label>
             </div>
@@ -64,12 +48,22 @@ export default function DateSelectModal() {
               type="checkbox"
               className="toggle"
               defaultChecked
-              onChange={toggleHandler}
+              onChange={(e) => {
+                dispatch({
+                  type: "toggle",
+                  isChecked: e.currentTarget.checked,
+                });
+              }}
             />
           </label>
-          {/* <button className="btn btn-sm btn-accent">전체</button> */}
-          <button className="btn btn-sm btn-accent" onClick={refreshHandler}>
-            새로고침
+          <button
+            className="btn btn-sm btn-accent"
+            onClick={() => {
+              const modal: any = document.getElementById("date_select_modal")!;
+              modal.close();
+            }}
+          >
+            확인
           </button>
         </div>
       </div>

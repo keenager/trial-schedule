@@ -1,11 +1,10 @@
 import React from "react";
-import useButtons from "@/lib/useButtons";
-import Toast from "./ui/Toast";
+import useExcel from "@/lib/useExcel";
 import DateSelectModal from "./components/DateSelectModal";
+import Toast from "./ui/Toast";
 
 export default function Buttons() {
-  // const { dateList } = useDataCtx();
-  const { errMsg, readExcelHandler } = useButtons();
+  const { errMsg, readExcelHandler } = useExcel();
 
   return (
     <section

@@ -1,7 +1,7 @@
-import { useDataCtx } from "@/app/store/DataProvider";
+import { useData } from "../store/DataProvider";
 
 export default function CaseDetail() {
-  const { targetCases } = useDataCtx();
+  const data = useData();
   return (
     <div
       id="case-detail"
@@ -9,7 +9,7 @@ export default function CaseDetail() {
     >
       <table className="table table-sm">
         <tbody>
-          {targetCases.map((c) => (
+          {data.mouseOverCases.map((c) => (
             <tr key={c.사건번호}>
               <td>{c.사건번호}</td>
               <td>

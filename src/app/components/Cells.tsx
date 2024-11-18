@@ -1,6 +1,6 @@
 import React from "react";
-import { useTimeTableCtx } from "../store/TimeTableProvider";
 import { TcUnit } from "@/models/tcModel";
+import { useDataDispatch } from "@/app/store/DataProvider";
 
 export function TimeCell({ time }: { time: string }) {
   return (
@@ -16,9 +16,7 @@ export function TimeCell({ time }: { time: string }) {
 }
 
 export function CaseNumCell({ tc }: { tc: TcUnit }) {
-  const { cellClickHandler, contextHandler, caseDetailHandler } =
-    useTimeTableCtx();
-
+  const dataDispatch = useDataDispatch();
   const id = [tc.date, tc.time].join("-");
 
   const className =
@@ -43,9 +41,26 @@ export function CaseNumCell({ tc }: { tc: TcUnit }) {
       id={id}
       className={className}
       style={style}
-      onClick={cellClickHandler}
-      onContextMenu={contextHandler}
-      onMouseOver={caseDetailHandler}
+      onClick={(e) => {
+        e.stopPropagation();
+        dataDispatch({ type: "click", id: e.currentTarget.id });
+      }}
+      onContextMenu={(e) => {
+        e.preventDefault();
+        dataDispatch({
+          type: "context",
+          id: e.currentTarget.id,
+          pos: { x: e.pageX, y: e.pageY },
+        });
+      }}
+      onMouseOver={(e) => {
+        e.stopPropagation();
+        dataDispatch({
+          type: "mouseOver",
+          id: e.currentTarget.id,
+          pos: { x: e.pageX, y: e.pageY },
+        });
+      }}
     >
       {tc.count === 0 ? "" : tc.count}
     </div>
