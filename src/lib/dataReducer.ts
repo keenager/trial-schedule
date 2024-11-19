@@ -28,7 +28,7 @@ export const initialValue: TableDataType = {
   cellClickCount: 0,
 };
 
-export type ActionType = {
+export type DataActionType = {
   type:
     | "load"
     | "mouseOver"
@@ -44,6 +44,10 @@ export type ActionType = {
 
 function hideContextMenu() {
   document.getElementById("context-menu")!.style.display = "none";
+}
+
+function copy(target: any) {
+  return JSON.parse(JSON.stringify(target));
 }
 
 function minmax(num1: number, num2: number) {
@@ -67,16 +71,18 @@ function getUnselectedTcObj(
   end: number
 ) {
   const [min, max] = minmax(start, end);
-  const list = [...tcObj[date]];
+  const list: TcUnit[] = copy(tcObj[date]);
+
   for (let i = min; i <= max; i++) {
     list[i].isSelected = false;
   }
+
   return { ...tcObj, [date]: list };
 }
 
 export function dataReducer(
   state: TableDataType,
-  action: ActionType
+  action: DataActionType
 ): TableDataType {
   const refresh = (tcObj: TcObjType) => {
     return {
@@ -125,7 +131,7 @@ export function dataReducer(
       const targetIndex = state.tcObj[targetDate].findIndex(
         (tc) => tc.time === action.id!.split("-")[1]
       );
-      const newList = [...state.tcObj[targetDate]];
+      const newList: TcUnit[] = copy(state.tcObj[targetDate]);
 
       switch (state.cellClickCount) {
         case 0: {
@@ -144,12 +150,18 @@ export function dataReducer(
             targetIndex === state.firstTarget.index
           ) {
             const newTcObj = getUnselectedTcObj(
-              targetDate,
+              state.firstTarget.date,
               state.tcObj,
               state.firstTarget.index,
+              state.firstTarget.index
+            );
+            const newTcObj2 = getUnselectedTcObj(
+              targetDate,
+              newTcObj,
+              targetIndex,
               targetIndex
             );
-            return refresh(newTcObj);
+            return refresh(newTcObj2);
           }
 
           const [min, max] = minmax(state.firstTarget.index, targetIndex);
@@ -159,6 +171,7 @@ export function dataReducer(
 
           return {
             ...state,
+            tcObj: { ...state.tcObj, [targetDate]: newList },
             secondTarget: { date: targetDate, index: targetIndex },
             cellClickCount: state.cellClickCount + 1,
           };
@@ -192,10 +205,11 @@ export function dataReducer(
         const targetIdx = state.tcObj[date].findIndex(
           (tc) => tc.time === action.id!.split("-")[1]
         );
-        const newList = [...state.tcObj[date]];
+        const newList: TcUnit[] = copy(state.tcObj[date]);
         newList[targetIdx].isSelected = true;
         return {
           ...state,
+          tcObj: { ...state.tcObj, [date]: newList },
           firstTarget: { date, index: targetIdx },
           cellClickCount: state.cellClickCount + 1,
         };
@@ -218,8 +232,8 @@ export function dataReducer(
         return refresh(newTcObj);
       }
 
-      // const newList = [...state.tcObj[date]];
-      const tempTcObj = { ...state.tcObj };
+      const tempTcObj = JSON.parse(JSON.stringify(state.tcObj));
+
       if (min <= 23 && 24 <= max) {
         // 선택범위가 한 컬럼을 넘어가는 경우에 관한 처리
         merge(tempTcObj[date], min, 23);
@@ -236,7 +250,7 @@ export function dataReducer(
 
     case "break": {
       const date = state.firstTarget.date;
-      let newTcObj = { ...state.tcObj };
+      let newTcObj: TcObjType = copy(state.tcObj);
 
       if (state.cellClickCount !== 1) {
         newTcObj = getUnselectedTcObj(
@@ -265,6 +279,11 @@ export function dataReducer(
     }
 
     case "cancel": {
+      if (state.cellClickCount <= 0) {
+        hideContextMenu();
+        return state;
+      }
+
       const newTcObj = getUnselectedTcObj(
         state.firstTarget.date,
         state.tcObj,

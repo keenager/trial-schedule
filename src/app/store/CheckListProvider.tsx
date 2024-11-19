@@ -1,11 +1,16 @@
 import React, { createContext, useContext, useReducer } from "react";
+import checkListReducer, { CheckListActionType } from "@/lib/checkListReducer";
 
 const CheckListContext = createContext<boolean[]>([]);
-const CheckListDispatchContext = createContext<React.Dispatch<ActionType>>(
-  () => {}
-);
+const CheckListDispatchContext = createContext<
+  React.Dispatch<CheckListActionType>
+>(() => {});
 
-export function CheckListProvider({ children }: { children: React.ReactNode }) {
+export default function CheckListProvider({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   const [checkList, dispatch] = useReducer(checkListReducer, []);
   return (
     <CheckListContext.Provider value={checkList}>
@@ -22,31 +27,4 @@ export function useCheckList() {
 
 export function useCheckListDispatch() {
   return useContext(CheckListDispatchContext);
-}
-
-type ActionType = {
-  type: "init" | "toggle" | "change";
-  data?: boolean[];
-  idx?: number;
-  isChecked: boolean;
-};
-
-function checkListReducer(checkList: boolean[], action: ActionType) {
-  switch (action.type) {
-    case "init": {
-      return action.data!;
-    }
-    case "toggle": {
-      return [...checkList].fill(action.isChecked);
-    }
-    case "change": {
-      if (action.idx == undefined) throw Error("idx is required to change");
-      const newCheckList = [...checkList];
-      newCheckList[action.idx] = action.isChecked;
-      return newCheckList;
-    }
-    default: {
-      throw Error(`Wrong action type: ${action.type}`);
-    }
-  }
 }

@@ -1,13 +1,13 @@
 import React, { createContext, Dispatch, useContext, useReducer } from "react";
 import {
-  ActionType,
+  DataActionType,
   dataReducer,
   initialValue,
   TableDataType,
 } from "@/lib/dataReducer";
 
 const DataContext = createContext<TableDataType>(Object.create({}));
-const DataDispatchContext = createContext<Dispatch<ActionType>>(
+const DataDispatchContext = createContext<Dispatch<DataActionType>>(
   Object.create({})
 );
 

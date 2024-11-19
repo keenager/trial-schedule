@@ -1,9 +1,9 @@
 "use client";
 
 import DataProvider from "./store/DataProvider";
+import CheckListProvider from "./store/CheckListProvider";
 import Buttons from "./Buttons";
 import ScheduleSection from "./ScheduleSection";
-import { CheckListProvider } from "./store/CheckListProvider";
 
 export default function Home() {
   // TODO: 병합 기능 일부 오류 개선하기
