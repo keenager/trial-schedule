@@ -3,10 +3,10 @@ import {
   DataActionType,
   dataReducer,
   initialValue,
-  TableDataType,
+  ScheduleDataType,
 } from "@/lib/dataReducer";
 
-const DataContext = createContext<TableDataType>(Object.create({}));
+const DataContext = createContext<ScheduleDataType>(Object.create({}));
 const DataDispatchContext = createContext<Dispatch<DataActionType>>(
   Object.create({})
 );

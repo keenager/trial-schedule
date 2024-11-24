@@ -1,14 +1,13 @@
 import React from "react";
 import { TcUnit } from "@/models/tcModel";
-import { useDataDispatch } from "@/app/store/DataProvider";
+import { useData, useDataDispatch } from "@/app/store/DataProvider";
+import { hideDetailDiv } from "@/lib/cell";
 
 export function TimeCell({ time }: { time: string }) {
   return (
     <div
       className="bg-slate-200 border border-slate-300 text-center content-center"
-      onMouseOver={() => {
-        document.getElementById("case-detail")!.style.display = "none";
-      }}
+      onMouseOver={hideDetailDiv}
     >
       {time}
     </div>
@@ -16,11 +15,12 @@ export function TimeCell({ time }: { time: string }) {
 }
 
 export function CaseNumCell({ tc }: { tc: TcUnit }) {
+  const { infoObj } = useData();
   const dataDispatch = useDataDispatch();
   const id = [tc.date, tc.time].join("-");
 
   const className =
-    "bg-base-100 border border-slate-300 text-center content-center" +
+    "flex bg-base-100 border border-slate-300 text-center content-center" +
     (tc.isSelected ? " bg-rose-200" : "") +
     // (tc.span > 1 ? ` row-start-${startLine} row-end-${endLine}` : "") +
     (tc.isHidden ? " hidden" : "");
@@ -35,6 +35,8 @@ export function CaseNumCell({ tc }: { tc: TcUnit }) {
           gridRowEnd: endLine,
         }
       : undefined;
+
+  const hasInfo: boolean = Object.keys(infoObj).includes(id);
 
   return (
     <div
@@ -53,16 +55,47 @@ export function CaseNumCell({ tc }: { tc: TcUnit }) {
           pos: { x: e.pageX, y: e.pageY },
         });
       }}
-      onMouseOver={(e) => {
-        e.stopPropagation();
-        dataDispatch({
-          type: "mouseOver",
-          id: e.currentTarget.id,
-          pos: { x: e.pageX, y: e.pageY },
-        });
-      }}
     >
-      {tc.count === 0 ? "" : tc.count}
+      <div className="basis-1/3" onMouseOver={hideDetailDiv}></div>
+      <div
+        className="basis-1/3 cursor-default"
+        onMouseOver={(e) => {
+          e.stopPropagation();
+          dataDispatch({
+            type: "onDetail",
+            id: e.currentTarget.parentElement!.id,
+            pos: { x: e.pageX, y: e.pageY },
+          });
+        }}
+      >
+        {tc.count === 0 ? "" : tc.count}
+      </div>
+      <div
+        className="basis-1/3 flex justify-center"
+        onMouseOver={hideDetailDiv}
+      >
+        {hasInfo && (
+          <div className="tooltip" data-tip={infoObj[id]}>
+            {InfoIcon}
+          </div>
+        )}
+      </div>
     </div>
   );
 }
+
+const InfoIcon = (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    fill="none"
+    viewBox="0 0 24 24"
+    className="stroke-info h-6 w-6 shrink-0"
+  >
+    <path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth="2"
+      d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+    ></path>
+  </svg>
+);

@@ -1,50 +1,55 @@
 import { Case, TcUnit } from "../models/tcModel";
+import { hideContextMenu } from "./contextMenu";
 
 export type TcObjType = {
   [key: string]: TcUnit[];
 };
 
-export type TargetType = {
-  date: string;
-  index: number;
+export type InfoObjType = {
+  [key: string]: string[];
 };
 
-export type TableDataType = {
+export type TargetType = {
+  date: string;
+  index: number | undefined;
+};
+
+export type ScheduleDataType = {
   caseList: Case[];
   dateList: string[];
   tcObj: TcObjType;
+  infoObj: InfoObjType;
   mouseOverCases: Case[];
   firstTarget: TargetType;
   secondTarget: TargetType;
   cellClickCount: number;
 };
-export const initialValue: TableDataType = {
+export const initialValue: ScheduleDataType = {
   caseList: [],
   dateList: [],
   tcObj: { date: [] },
+  infoObj: { date: [""] },
   mouseOverCases: [],
-  firstTarget: { date: "", index: 0 },
-  secondTarget: { date: "", index: 0 },
+  firstTarget: { date: "", index: undefined },
+  secondTarget: { date: "", index: undefined },
   cellClickCount: 0,
 };
 
 export type DataActionType = {
   type:
     | "load"
-    | "mouseOver"
+    | "onDetail"
     | "click"
     | "context"
+    | "addInfo"
     | "merge"
     | "break"
     | "cancel";
-  data?: TableDataType;
+  data?: ScheduleDataType;
   id?: string;
   pos?: { x: number; y: number };
+  infoObj?: InfoObjType;
 };
-
-function hideContextMenu() {
-  document.getElementById("context-menu")!.style.display = "none";
-}
 
 function copy(target: any) {
   return JSON.parse(JSON.stringify(target));
@@ -81,15 +86,16 @@ function getUnselectedTcObj(
 }
 
 export function dataReducer(
-  state: TableDataType,
+  state: ScheduleDataType,
   action: DataActionType
-): TableDataType {
-  const refresh = (tcObj: TcObjType) => {
+): ScheduleDataType {
+  const refresh = (tcObj: TcObjType): ScheduleDataType => {
     return {
       ...initialValue,
       caseList: state.caseList,
       dateList: state.dateList,
       tcObj: tcObj,
+      infoObj: state.infoObj,
     };
   };
 
@@ -98,7 +104,7 @@ export function dataReducer(
       return action.data || initialValue;
     }
 
-    case "mouseOver": {
+    case "onDetail": {
       const caseDetailDiv = document.getElementById("case-detail")!;
       const date = action.id!.split("-")[0];
       const targetTc = state.tcObj[date].filter(
@@ -152,8 +158,8 @@ export function dataReducer(
             const newTcObj = getUnselectedTcObj(
               state.firstTarget.date,
               state.tcObj,
-              state.firstTarget.index,
-              state.firstTarget.index
+              state.firstTarget.index!,
+              state.firstTarget.index!
             );
             const newTcObj2 = getUnselectedTcObj(
               targetDate,
@@ -164,7 +170,7 @@ export function dataReducer(
             return refresh(newTcObj2);
           }
 
-          const [min, max] = minmax(state.firstTarget.index, targetIndex);
+          const [min, max] = minmax(state.firstTarget.index!, targetIndex);
           for (let i = min; i <= max; i++) {
             newList[i].isSelected = true;
           }
@@ -181,8 +187,8 @@ export function dataReducer(
           const newTcObj = getUnselectedTcObj(
             state.firstTarget.date,
             state.tcObj,
-            state.firstTarget.index,
-            state.secondTarget.index
+            state.firstTarget.index!,
+            state.secondTarget.index!
           );
           return refresh(newTcObj);
         }
@@ -217,16 +223,39 @@ export function dataReducer(
         return state;
       }
     }
+
+    case "addInfo": {
+      return {
+        ...state,
+        infoObj: action.infoObj!,
+      };
+    }
+
     case "merge": {
       const date = state.firstTarget.date;
+
+      // 셀 하나만 선택한 경우 중단
+      if (
+        state.cellClickCount !== 2 ||
+        state.secondTarget.index === undefined
+      ) {
+        const newTcObj = getUnselectedTcObj(
+          date,
+          state.tcObj,
+          state.firstTarget.index!,
+          state.firstTarget.index!
+        );
+        hideContextMenu();
+        return refresh(newTcObj);
+      }
+
       const [min, max] = minmax(
-        state.firstTarget.index,
+        state.firstTarget.index!,
         state.secondTarget.index
       );
 
-      // 셀 하나만 선택한 경우 중단
       // 점심시간 전후에 걸쳐 병합할 일은 없으므로 중단
-      if (state.cellClickCount !== 2 || (min <= 11 && 12 <= max)) {
+      if (min <= 11 && 12 <= max) {
         const newTcObj = getUnselectedTcObj(date, state.tcObj, min, max);
         hideContextMenu();
         return refresh(newTcObj);
@@ -256,18 +285,18 @@ export function dataReducer(
         newTcObj = getUnselectedTcObj(
           date,
           newTcObj,
-          state.firstTarget.index,
-          state.secondTarget.index
+          state.firstTarget.index || 0,
+          state.secondTarget.index || 0
         );
-      } else if (newTcObj[date][state.firstTarget.index].span === 1) {
+      } else if (newTcObj[date][state.firstTarget.index!].span === 1) {
         newTcObj = getUnselectedTcObj(
           date,
           newTcObj,
-          state.firstTarget.index,
-          state.firstTarget.index
+          state.firstTarget.index!,
+          state.firstTarget.index!
         );
       } else {
-        const idx = state.firstTarget.index;
+        const idx = state.firstTarget.index!;
         for (let i = idx + 1; i < idx + newTcObj[date][idx].span; i++) {
           newTcObj[date][i].isHidden = false;
         }

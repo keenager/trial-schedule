@@ -1,8 +1,8 @@
 [package]
-name = "app"
+name = "trial_schedule_app"
 version = "0.1.0"
-description = "A Tauri App"
-authors = ["you"]
+description = "Trial Schedule App"
+authors = ["RedTraining"]
 license = ""
 repository = ""
 edition = "2021"

@@ -4,8 +4,8 @@ import { open } from "@tauri-apps/plugin-dialog";
 import { Case } from "@/models/tcModel";
 import { useData, useDataDispatch } from "@/app/store/DataProvider";
 import { useCheckListDispatch } from "@/app/store/CheckListProvider";
-import getTcListOf from "./getTcListOf";
-import { TableDataType, TcObjType } from "./dataReducer";
+import { ScheduleDataType, TcObjType } from "./dataReducer";
+import getTcListOf from "./tcList";
 
 export default function useExcel() {
   const data = useData();
@@ -36,11 +36,12 @@ export default function useExcel() {
       tcObj[date] = getTcListOf(caseList, date);
     }
 
-    const newData: TableDataType = {
+    const newData: ScheduleDataType = {
       ...data,
       caseList,
       dateList,
       tcObj,
+      // infoObj,
     };
 
     dataDispatch({ type: "load", data: newData });

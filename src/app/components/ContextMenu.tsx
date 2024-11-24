@@ -1,6 +1,8 @@
-import { useDataDispatch } from "../store/DataProvider";
+import { useData, useDataDispatch } from "../store/DataProvider";
+import { hideContextMenu } from "@/lib/contextMenu";
 
 export default function ContextMenu() {
+  const { secondTarget } = useData();
   const dispatch = useDataDispatch();
 
   return (
@@ -8,6 +10,18 @@ export default function ContextMenu() {
       id="context-menu"
       className="menu menu-vertical bg-base-200 rounded-box absolute hidden"
     >
+      {!secondTarget.index && (
+        <li
+          onClick={() => {
+            // 모달 창 띄워서 텍스트 인풋
+            hideContextMenu();
+            const modal: any = document.getElementById("add_info_modal")!;
+            modal.showModal();
+          }}
+        >
+          <a>사용자 정보</a>
+        </li>
+      )}
       <li onClick={() => dispatch({ type: "merge" })}>
         <a>합치기</a>
       </li>

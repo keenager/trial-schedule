@@ -1,11 +1,18 @@
 import React from "react";
+import { useMsg } from "../store/ToastProvider";
 
-export default function Toast({ children }: { children: React.ReactNode }) {
-  const clickHandler = () => {
+export default function Toast() {
+  const msg = useMsg();
+
+  const handleClose = () => {
     document.getElementById("toast")!.style.display = "none";
   };
+
   return (
-    <div id="toast" className="toast toast-center min-w-60 w-fit hidden">
+    <div
+      id="toast"
+      className="toast toast-center min-w-60 max-w-full w-fit hidden"
+    >
       <div className="alert alert-warning shadow-lg">
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -22,12 +29,9 @@ export default function Toast({ children }: { children: React.ReactNode }) {
         </svg>
         <div>
           <h3 className="font-bold">Error!</h3>
-          <div className="text-xs"> {children}</div>
+          <div className="text-xs">{msg.substring(0, 70) + " ..."}</div>
         </div>
-        <button
-          className="btn btn-square btn-xs ml-auto"
-          onClick={clickHandler}
-        >
+        <button className="btn btn-square btn-xs ml-auto" onClick={handleClose}>
           <svg
             xmlns="http://www.w3.org/2000/svg"
             className="h-6 w-6"
