@@ -18,6 +18,10 @@
   .no-print {
     display: none;
   }
+
+  .only-print {
+    display: block;
+  }
 }
 
 html {

@@ -30,19 +30,19 @@ export default function ScheduleSection() {
     getUserAddedInfoFromFile();
   }, []);
 
+  const checkedDateList = data.dateList.filter((_, i) => checkList[i]);
+
   return (
     <section className="schedule">
-      {data.dateList.map(
-        (date, idx) =>
-          checkList[idx] && (
-            <TimeTable
-              key={idx}
-              idx={idx}
-              date={date}
-              tcList={data.tcObj[date]}
-            />
-          )
-      )}
+      {checkedDateList.map((date, idx) => (
+        <TimeTable
+          key={idx}
+          idx={idx}
+          date={date}
+          checkedDateList={checkedDateList}
+          tcList={data.tcObj[date]}
+        />
+      ))}
       {/* 유틸 컴포넌트 */}
       <ContextMenu />
       <AddInfoModal />
