@@ -2,10 +2,10 @@
 
 import DataProvider from "./store/DataProvider";
 import CheckListProvider from "./store/CheckListProvider";
-import Buttons from "./Buttons";
-import ScheduleSection from "./ScheduleSection";
-import Toast from "./ui/Toast";
 import ToastProvider from "./store/ToastProvider";
+import Buttons from "./components/Buttons";
+import ScheduleSection from "./ScheduleSection";
+import Toast from "./components/Toast";
 
 export default function Home() {
   // TODO: 사용자 추가 정보 기능 -> 프린트할 때 화면 하단에 나오게...
@@ -22,7 +22,6 @@ export default function Home() {
       <CheckListProvider>
         <ToastProvider>
           {/* 기본 컴포넌트 */}
-          {/* <MainTitle>기일부</MainTitle> */}
           <Buttons />
           <ScheduleSection />
           <Toast />

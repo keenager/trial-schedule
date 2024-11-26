@@ -21,7 +21,7 @@ export default function RootLayout({
         <main className="h-[95%] flex flex-col bg-white px-8 py-8 dark:bg-gray-900">
           {children}
         </main>
-        <footer className="h-[5%] text-center bg-white dark:bg-gray-900">
+        <footer className="h-[5%] text-center bg-white dark:bg-gray-900 no-print">
           <span>Developed by RedTraining</span>
         </footer>
       </body>

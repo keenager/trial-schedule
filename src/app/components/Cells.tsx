@@ -20,7 +20,7 @@ export function CaseNumCell({ tc }: { tc: TcUnit }) {
   const id = [tc.date, tc.time].join("-");
 
   const className =
-    "flex bg-base-100 border border-slate-300 text-center content-center" +
+    "flex bg-base-100 border border-slate-300 text-center items-center" +
     (tc.isSelected ? " bg-rose-200" : "") +
     // (tc.span > 1 ? ` row-start-${startLine} row-end-${endLine}` : "") +
     (tc.isHidden ? " hidden" : "");

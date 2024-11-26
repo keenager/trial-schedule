@@ -1,6 +1,6 @@
 import React from "react";
 import useExcel from "@/lib/useExcel";
-import DateSelectModal from "./components/DateSelectModal";
+import DateSelectModal from "./DateSelectModal";
 import { hideDetailDiv } from "@/lib/cell";
 
 export default function Buttons() {
@@ -8,7 +8,7 @@ export default function Buttons() {
 
   return (
     <section
-      className="no-print flex justify-between"
+      className="no-print flex justify-between fixed top-0 left-0 right-0 z-50 bg-white py-3 px-8"
       onMouseOver={hideDetailDiv}
     >
       <div className="flex justify-start items-center gap-3">

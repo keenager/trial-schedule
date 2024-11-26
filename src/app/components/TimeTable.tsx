@@ -65,7 +65,11 @@ export default function TimeTable({
       </section>
       {/* 사용자 추가 정보 표시 */}
       {isBottom && (
-        <table className="table table-sm only-print break-after-page">
+        <table
+          className={`table table-sm hidden only-print ${
+            !isLast && "break-after-page"
+          }`}
+        >
           <tbody>
             {targetDateTimes.map((dt, i) => (
               <tr key={dt}>
