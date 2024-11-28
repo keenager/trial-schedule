@@ -8,8 +8,7 @@ import ScheduleSection from "./ScheduleSection";
 import Toast from "./components/Toast";
 
 export default function Home() {
-  // TODO: 사용자 추가 정보 기능 -> 프린트할 때 화면 하단에 나오게...
-  // 사건번호 선택 기능
+  // TODO: 사건부호 수정하면 자동 갱신
 
   // useEffect(() => {
   // document.querySelector("div:has(h2)")!.addEventListener("mouseover", () => {

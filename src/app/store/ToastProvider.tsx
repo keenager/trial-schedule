@@ -42,8 +42,8 @@ export function closeToast() {
   document.getElementById("toast")!.style.display = "none";
 }
 
-export function closeToastInSec() {
+export function closeToastInSec(sec: number) {
   setTimeout(() => {
     document.getElementById("toast")!.style.display = "none";
-  }, 5000);
+  }, sec * 1000);
 }

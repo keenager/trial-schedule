@@ -7,7 +7,9 @@ import TimeTable from "./components/TimeTable";
 import ContextMenu from "./components/ContextMenu";
 import CaseDetail from "./components/CaseDetail";
 import AddInfoModal from "./components/AddInfoModal";
-import { USER_INFO_FILE_NAME } from "@/lib/constants";
+import { USER_ADDED_INFO_FILE_NAME } from "@/lib/constants";
+import { TcObjType } from "@/lib/dataReducer";
+import getTcListOf from "@/lib/tcList";
 
 export default function ScheduleSection() {
   const data = useData();
@@ -16,11 +18,11 @@ export default function ScheduleSection() {
 
   useEffect(() => {
     async function getUserAddedInfoFromFile() {
-      const fileExists = await exists(USER_INFO_FILE_NAME, {
+      const fileExists = await exists(USER_ADDED_INFO_FILE_NAME, {
         baseDir: BaseDirectory.AppLocalData,
       });
       const contents = fileExists
-        ? await readTextFile(USER_INFO_FILE_NAME, {
+        ? await readTextFile(USER_ADDED_INFO_FILE_NAME, {
             baseDir: BaseDirectory.AppLocalData,
           })
         : "{}";

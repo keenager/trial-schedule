@@ -15,6 +15,7 @@ export type TargetType = {
 };
 
 export type ScheduleDataType = {
+  categoryList: string[];
   caseList: Case[];
   dateList: string[];
   tcObj: TcObjType;
@@ -25,6 +26,7 @@ export type ScheduleDataType = {
   cellClickCount: number;
 };
 export const initialValue: ScheduleDataType = {
+  categoryList: [],
   caseList: [],
   dateList: [],
   tcObj: { date: [] },
@@ -37,6 +39,7 @@ export const initialValue: ScheduleDataType = {
 
 export type DataActionType = {
   type:
+    | "category"
     | "load"
     | "onDetail"
     | "click"
@@ -49,6 +52,7 @@ export type DataActionType = {
   id?: string;
   pos?: { x: number; y: number };
   infoObj?: InfoObjType;
+  categoryList?: string[];
 };
 
 function copy(target: any) {
@@ -100,6 +104,10 @@ export function dataReducer(
   };
 
   switch (action.type) {
+    case "category": {
+      return { ...state, categoryList: action.categoryList! };
+    }
+
     case "load": {
       return action.data || initialValue;
     }

@@ -1,10 +1,50 @@
-import React from "react";
+import React, { useEffect } from "react";
 import useExcel from "@/lib/useExcel";
 import DateSelectModal from "./DateSelectModal";
 import { hideDetailDiv } from "@/lib/cell";
+import CategoryModal from "./CategoryModal";
+import { BaseDirectory, exists, readTextFile } from "@tauri-apps/plugin-fs";
+import { CATEGORY_FILE_NAME } from "@/lib/constants";
+import { useDataDispatch } from "../store/DataProvider";
+import { closeToastInSec, showToast, useSetMsg } from "../store/ToastProvider";
 
 export default function Buttons() {
-  const { readExcelHandler } = useExcel();
+  const handleExcel = useExcel();
+  const dataDispatch = useDataDispatch();
+  const setMsg = useSetMsg();
+
+  useEffect(() => {
+    async function getCategoryListFromFile() {
+      const fileExists = await exists(CATEGORY_FILE_NAME, {
+        baseDir: BaseDirectory.AppLocalData,
+      });
+
+      const contents = fileExists
+        ? await readTextFile(CATEGORY_FILE_NAME, {
+            baseDir: BaseDirectory.AppLocalData,
+          })
+        : "[]";
+      const categoryList = JSON.parse(contents);
+
+      if (categoryList.length > 0) {
+        dataDispatch({ type: "category", categoryList });
+      } else {
+        const modal: any = document.getElementById("category_modal")!;
+        modal.showModal();
+      }
+    }
+
+    try {
+      getCategoryListFromFile();
+    } catch (e) {
+      let msg;
+      if (e instanceof Error) msg = e.message;
+      else msg = String(e);
+      setMsg(msg);
+      showToast();
+      closeToastInSec(5);
+    }
+  }, []);
 
   return (
     <section
@@ -12,11 +52,19 @@ export default function Buttons() {
       onMouseOver={hideDetailDiv}
     >
       <div className="flex justify-start items-center gap-3">
-        <button className="btn btn-sm">사건번호</button>
-        {/* <button className="btn btn-sm">사용자 추가 정보</button> */}
+        <button
+          className="btn btn-sm"
+          onClick={() => {
+            const modal: any = document.getElementById("category_modal")!;
+            modal.showModal();
+          }}
+        >
+          사건 부호
+        </button>
+        <CategoryModal />
       </div>
       <div className="flex justify-end items-center gap-3">
-        <button className="btn btn-sm btn-accent" onClick={readExcelHandler}>
+        <button className="btn btn-sm btn-accent" onClick={handleExcel}>
           엑셀 파일 불러오기
         </button>
 

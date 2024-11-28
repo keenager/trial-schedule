@@ -7,15 +7,17 @@ export default function DateSelectModal() {
   const checkList = useCheckList();
   const dispatch = useCheckListDispatch();
 
+  const handleClose = () => {
+    const modal: any = document.getElementById("date_select_modal")!;
+    modal.close();
+  };
+
   return (
     <dialog id="date_select_modal" className="modal">
       <div className="modal-box w-fit">
         <button
           className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
-          onClick={() => {
-            const modal: any = document.getElementById("date_select_modal")!;
-            modal.close();
-          }}
+          onClick={handleClose}
         >
           ✕
         </button>
@@ -56,13 +58,7 @@ export default function DateSelectModal() {
               }}
             />
           </label>
-          <button
-            className="btn btn-sm btn-accent"
-            onClick={() => {
-              const modal: any = document.getElementById("date_select_modal")!;
-              modal.close();
-            }}
-          >
+          <button className="btn btn-sm btn-accent" onClick={handleClose}>
             확인
           </button>
         </div>
