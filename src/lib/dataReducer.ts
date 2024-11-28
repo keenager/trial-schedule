@@ -1,5 +1,6 @@
 import { Case, TcUnit } from "../models/tcModel";
 import { hideContextMenu } from "./contextMenu";
+import getTcListOf from "./tcList";
 
 export type TcObjType = {
   [key: string]: TcUnit[];
@@ -17,6 +18,7 @@ export type TargetType = {
 export type ScheduleDataType = {
   categoryList: string[];
   caseList: Case[];
+  filteredCaseList: Case[];
   dateList: string[];
   tcObj: TcObjType;
   infoObj: InfoObjType;
@@ -25,9 +27,11 @@ export type ScheduleDataType = {
   secondTarget: TargetType;
   cellClickCount: number;
 };
+
 export const initialValue: ScheduleDataType = {
   categoryList: [],
   caseList: [],
+  filteredCaseList: [],
   dateList: [],
   tcObj: { date: [] },
   infoObj: { date: [""] },
@@ -48,7 +52,8 @@ export type DataActionType = {
     | "merge"
     | "break"
     | "cancel";
-  data?: ScheduleDataType;
+  // data?: ScheduleDataType;
+  caseList?: Case[];
   id?: string;
   pos?: { x: number; y: number };
   infoObj?: InfoObjType;
@@ -97,19 +102,52 @@ export function dataReducer(
     return {
       ...initialValue,
       caseList: state.caseList,
+      filteredCaseList: state.filteredCaseList,
       dateList: state.dateList,
       tcObj: tcObj,
       infoObj: state.infoObj,
     };
   };
 
+  const calc = (caseList: Case[]) => {
+    const dateList = [...new Set(caseList.map((item) => item.날짜))];
+    const tcObj: TcObjType = {};
+    for (const date of dateList) {
+      tcObj[date] = getTcListOf(caseList, date);
+    }
+    return { dateList, tcObj };
+  };
+
   switch (action.type) {
     case "category": {
-      return { ...state, categoryList: action.categoryList! };
+      // 지정한 사건 부호를 이용해 사건들 필터링
+      const filteredCaseList = state.caseList.filter((c) =>
+        action.categoryList!.some((cate) => c.사건번호.includes(cate))
+      );
+      const { dateList, tcObj } = calc(filteredCaseList);
+      return {
+        ...state,
+        filteredCaseList,
+        dateList,
+        tcObj,
+        categoryList: action.categoryList!,
+      };
     }
 
     case "load": {
-      return action.data || initialValue;
+      // 저장된 사건 부호를 이용해 사건들 필터링
+      const filteredCaseList = action.caseList!.filter((c) =>
+        state.categoryList.some((cate) => c.사건번호.includes(cate))
+      );
+      const { dateList, tcObj } = calc(filteredCaseList);
+
+      return {
+        ...state,
+        caseList: action.caseList!,
+        filteredCaseList,
+        dateList,
+        tcObj,
+      };
     }
 
     case "onDetail": {
@@ -124,7 +162,7 @@ export function dataReducer(
         return state;
       }
 
-      const mouseOverCases = state.caseList.filter(
+      const mouseOverCases = state.filteredCaseList.filter(
         (c) => c.날짜 === targetTc[0].date && c.시각 === targetTc[0].time
       );
 

@@ -83,7 +83,7 @@ export default function CategoryModal() {
         <label className="form-control py-4">
           <div className="label">
             <span className="label-text">
-              추가할 '사건 부호'(ex. 가단, 고단)를 입력하세요.
+              추가할 &apos;사건 부호&apos;(ex. 가단, 고단)를 입력하세요.
             </span>
           </div>
           <input

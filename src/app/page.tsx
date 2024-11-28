@@ -8,13 +8,7 @@ import ScheduleSection from "./ScheduleSection";
 import Toast from "./components/Toast";
 
 export default function Home() {
-  // TODO: 사건부호 수정하면 자동 갱신
-
-  // useEffect(() => {
-  // document.querySelector("div:has(h2)")!.addEventListener("mouseover", () => {
-  //   document.getElementById("case-detail")!.style.display = "none";
-  // });
-  // }, []);
+  // TODO:
 
   return (
     <DataProvider>

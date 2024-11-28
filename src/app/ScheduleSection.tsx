@@ -8,8 +8,6 @@ import ContextMenu from "./components/ContextMenu";
 import CaseDetail from "./components/CaseDetail";
 import AddInfoModal from "./components/AddInfoModal";
 import { USER_ADDED_INFO_FILE_NAME } from "@/lib/constants";
-import { TcObjType } from "@/lib/dataReducer";
-import getTcListOf from "@/lib/tcList";
 
 export default function ScheduleSection() {
   const data = useData();
