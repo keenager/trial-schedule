@@ -14,7 +14,6 @@ export default function Home() {
     <DataProvider>
       <CheckListProvider>
         <ToastProvider>
-          {/* 기본 컴포넌트 */}
           <Buttons />
           <ScheduleSection />
           <Toast />

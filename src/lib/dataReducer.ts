@@ -1,32 +1,13 @@
-import { Case, TcUnit } from "../models/tcModel";
+import { TcUnit } from "../models/tcModel";
+import { DataActionType, ScheduleDataType, TcObjType } from "./dataType";
+import {
+  copy,
+  getDateTcFromCaseList,
+  getUnselectedTcObj,
+  merge,
+  minmax,
+} from "./dataHandleFunc";
 import { hideContextMenu } from "./contextMenu";
-import getTcListOf from "./tcList";
-
-export type TcObjType = {
-  [key: string]: TcUnit[];
-};
-
-export type InfoObjType = {
-  [key: string]: string[];
-};
-
-export type TargetType = {
-  date: string;
-  index: number | undefined;
-};
-
-export type ScheduleDataType = {
-  categoryList: string[];
-  caseList: Case[];
-  filteredCaseList: Case[];
-  dateList: string[];
-  tcObj: TcObjType;
-  infoObj: InfoObjType;
-  mouseOverCases: Case[];
-  firstTarget: TargetType;
-  secondTarget: TargetType;
-  cellClickCount: number;
-};
 
 export const initialValue: ScheduleDataType = {
   categoryList: [],
@@ -40,59 +21,6 @@ export const initialValue: ScheduleDataType = {
   secondTarget: { date: "", index: undefined },
   cellClickCount: 0,
 };
-
-export type DataActionType = {
-  type:
-    | "category"
-    | "load"
-    | "onDetail"
-    | "click"
-    | "context"
-    | "addInfo"
-    | "merge"
-    | "break"
-    | "cancel";
-  // data?: ScheduleDataType;
-  caseList?: Case[];
-  id?: string;
-  pos?: { x: number; y: number };
-  infoObj?: InfoObjType;
-  categoryList?: string[];
-};
-
-function copy(target: any) {
-  return JSON.parse(JSON.stringify(target));
-}
-
-function minmax(num1: number, num2: number) {
-  const max = Math.max(num1, num2);
-  const min = Math.min(num1, num2);
-  return [min, max];
-}
-
-function merge(list: TcUnit[], start: number, end: number) {
-  list[start].span = end - start + 1 + list[end].span - 1; // 이미 병합된 셀과 함께 병합 가능.
-  for (let i = start + 1; i <= end; i++) {
-    list[i].span = 1;
-    list[i].isHidden = true;
-  }
-}
-
-function getUnselectedTcObj(
-  date: string,
-  tcObj: TcObjType,
-  start: number,
-  end: number
-) {
-  const [min, max] = minmax(start, end);
-  const list: TcUnit[] = copy(tcObj[date]);
-
-  for (let i = min; i <= max; i++) {
-    list[i].isSelected = false;
-  }
-
-  return { ...tcObj, [date]: list };
-}
 
 export function dataReducer(
   state: ScheduleDataType,
@@ -109,41 +37,32 @@ export function dataReducer(
     };
   };
 
-  const calc = (caseList: Case[]) => {
-    const dateList = [...new Set(caseList.map((item) => item.날짜))];
-    const tcObj: TcObjType = {};
-    for (const date of dateList) {
-      tcObj[date] = getTcListOf(caseList, date);
-    }
-    return { dateList, tcObj };
-  };
-
   switch (action.type) {
     case "category": {
       // 지정한 사건 부호를 이용해 사건들 필터링
       const filteredCaseList = state.caseList.filter((c) =>
-        action.categoryList!.some((cate) => c.사건번호.includes(cate))
+        action.categoryList.some((cate) => c.사건번호.includes(cate))
       );
-      const { dateList, tcObj } = calc(filteredCaseList);
+      const { dateList, tcObj } = getDateTcFromCaseList(filteredCaseList);
       return {
         ...state,
         filteredCaseList,
         dateList,
         tcObj,
-        categoryList: action.categoryList!,
+        categoryList: action.categoryList,
       };
     }
 
     case "load": {
       // 저장된 사건 부호를 이용해 사건들 필터링
-      const filteredCaseList = action.caseList!.filter((c) =>
+      const filteredCaseList = action.caseList.filter((c) =>
         state.categoryList.some((cate) => c.사건번호.includes(cate))
       );
-      const { dateList, tcObj } = calc(filteredCaseList);
+      const { dateList, tcObj } = getDateTcFromCaseList(filteredCaseList);
 
       return {
         ...state,
-        caseList: action.caseList!,
+        caseList: action.caseList,
         filteredCaseList,
         dateList,
         tcObj,
@@ -152,7 +71,7 @@ export function dataReducer(
 
     case "onDetail": {
       const caseDetailDiv = document.getElementById("case-detail")!;
-      const date = action.id!.split("-")[0];
+      const date = action.id.split("-")[0];
       const targetTc = state.tcObj[date].filter(
         (tc) => tc.date + "-" + tc.time === action.id
       );
@@ -167,21 +86,21 @@ export function dataReducer(
       );
 
       caseDetailDiv.style.left =
-        (action.pos!.x > window.innerWidth * 0.66
+        (action.pos.x > window.innerWidth * 0.66
           ? window.innerWidth * 0.5
-          : action.pos!.x > window.innerWidth * 0.33
+          : action.pos.x > window.innerWidth * 0.33
           ? window.innerWidth * 0.33
-          : action.pos!.x) + "px";
-      caseDetailDiv.style.top = action.pos!.y + "px";
+          : action.pos.x) + "px";
+      caseDetailDiv.style.top = action.pos.y + "px";
       caseDetailDiv.style.display = "block";
 
       return { ...state, mouseOverCases };
     }
 
     case "click": {
-      const targetDate = action.id!.split("-")[0];
+      const targetDate = action.id.split("-")[0];
       const targetIndex = state.tcObj[targetDate].findIndex(
-        (tc) => tc.time === action.id!.split("-")[1]
+        (tc) => tc.time === action.id.split("-")[1]
       );
       const newList: TcUnit[] = copy(state.tcObj[targetDate]);
 
@@ -247,15 +166,15 @@ export function dataReducer(
 
     case "context": {
       const contextMenu = document.getElementById("context-menu")!;
-      contextMenu.style.left = action.pos!.x + "px";
-      contextMenu.style.top = action.pos!.y + "px";
+      contextMenu.style.left = action.pos.x + "px";
+      contextMenu.style.top = action.pos.y + "px";
       contextMenu.style.display = "block";
 
-      const date = action.id!.split("-")[0];
+      const date = action.id.split("-")[0];
 
       if (state.cellClickCount === 0) {
         const targetIdx = state.tcObj[date].findIndex(
-          (tc) => tc.time === action.id!.split("-")[1]
+          (tc) => tc.time === action.id.split("-")[1]
         );
         const newList: TcUnit[] = copy(state.tcObj[date]);
         newList[targetIdx].isSelected = true;
@@ -273,7 +192,7 @@ export function dataReducer(
     case "addInfo": {
       return {
         ...state,
-        infoObj: action.infoObj!,
+        infoObj: action.infoObj,
       };
     }
 
@@ -369,8 +288,8 @@ export function dataReducer(
       return refresh(newTcObj);
     }
 
-    default: {
-      throw Error(`Invalid action type: ${action.type}`);
-    }
+    // default: {
+    //   throw Error(`Invalid action type: ${action.type}`);
+    // }
   }
 }

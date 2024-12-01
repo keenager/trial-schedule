@@ -56,7 +56,13 @@ export function CaseNumCell({ tc }: { tc: TcUnit }) {
         });
       }}
     >
-      <div className="basis-1/3" onMouseOver={hideDetailDiv}></div>
+      <div
+        className="basis-1/3 w-full h-full"
+        onMouseOver={() => {
+          console.log("mouse over");
+          hideDetailDiv();
+        }}
+      ></div>
       <div
         className="basis-1/3 cursor-default"
         onMouseOver={(e) => {
@@ -71,7 +77,7 @@ export function CaseNumCell({ tc }: { tc: TcUnit }) {
         {tc.count === 0 ? "" : tc.count}
       </div>
       <div
-        className="basis-1/3 flex justify-center"
+        className="basis-1/3 w-full h-full flex justify-center items-center"
         onMouseOver={hideDetailDiv}
       >
         {hasInfo && (

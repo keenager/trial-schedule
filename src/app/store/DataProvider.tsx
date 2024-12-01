@@ -1,10 +1,6 @@
 import React, { createContext, Dispatch, useContext, useReducer } from "react";
-import {
-  DataActionType,
-  dataReducer,
-  initialValue,
-  ScheduleDataType,
-} from "@/lib/dataReducer";
+import { DataActionType, ScheduleDataType } from "@/lib/dataType";
+import { dataReducer, initialValue } from "@/lib/dataReducer";
 
 const DataContext = createContext<ScheduleDataType>(Object.create({}));
 const DataDispatchContext = createContext<Dispatch<DataActionType>>(
