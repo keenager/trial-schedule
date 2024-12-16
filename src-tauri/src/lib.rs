@@ -1,4 +1,4 @@
-use std::{fs::{self, write, File}, io::Error};
+use std::{fs::{self, write, File}, io::{BufReader, Error}};
 use std::collections::HashMap;
 use calamine::{open_workbook, Reader, Xlsx};
 
@@ -35,7 +35,21 @@ fn read_file_command(file_path: String) -> String{
 #[tauri::command]
 fn read_data_from_excel(file_path: String) -> Vec<HashMap<String, String>>{
     let mut data_list: Vec<HashMap<String, String>> = Vec::new();
-    let mut workbook: Xlsx<_> = open_workbook(file_path).unwrap();
+    let mut workbook: Xlsx<BufReader<File>>;
+
+    match open_workbook(file_path) {
+        Ok(result) =>{
+            workbook = result;
+        },
+        Err(e)=>{
+            let mut val: HashMap<String, String> = HashMap::new();
+            val.insert("errMsg".to_string(), e.to_string());
+            data_list.push(val);
+            return data_list
+        }
+    }
+
+    
     let sheets: Vec<String> = workbook.sheet_names();
     
     match workbook.worksheet_range(&sheets[0]) {
