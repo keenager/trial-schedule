@@ -5,7 +5,7 @@ export default function CaseDetail() {
   return (
     <div
       id="case-detail"
-      className="overflow-y-auto max-h-96 min-w-60 bg-green-200 rounded-lg shadow-xl p-2 absolute hidden"
+      className="overflow-y-auto max-h-96 min-w-60 bg-green-200 rounded-lg shadow-xl p-2 absolute z-20 hidden"
     >
       <table className="table table-sm">
         <tbody>

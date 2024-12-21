@@ -8,7 +8,7 @@ export default function ContextMenu() {
   return (
     <ul
       id="context-menu"
-      className="menu menu-vertical bg-base-200 rounded-box absolute hidden"
+      className="menu menu-vertical bg-base-200 rounded-box absolute z-30 hidden"
     >
       {!secondTarget.index && (
         <li

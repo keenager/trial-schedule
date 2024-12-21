@@ -1,53 +1,23 @@
-import { useState } from "react";
-import { BaseDirectory, writeTextFile } from "@tauri-apps/plugin-fs";
-import { getTimeList } from "@/models/tcModel";
-import { useData, useDataDispatch } from "../store/DataProvider";
-import { closeToastInSec, showToast, useSetMsg } from "../store/ToastProvider";
-import { USER_ADDED_INFO_FILE_NAME } from "@/lib/constants";
+import EditIcon from "./icons/EditIcon";
+import DeleteIcon from "./icons/DeleteIcon";
+import ArrowEnterIcon from "./icons/ArrowEnterIcon";
+import useInfoHandler from "@/lib/hooks/useInfoHandler";
 
 export default function AddInfoModal() {
-  const { infoObj, firstTarget } = useData();
-  const dataDispatch = useDataDispatch();
-  const setMsg = useSetMsg();
-
-  const [inputText, setInputText] = useState("");
-
-  const id = firstTarget.date + "-" + getTimeList()[firstTarget.index!];
-  const savedInfoList = infoObj[id] || [];
-
-  const handleSave = async () => {
-    if (inputText !== "") {
-      savedInfoList.push(inputText);
-      const newInfoObj = { ...infoObj, [id]: savedInfoList };
-
-      try {
-        await writeTextFile(
-          USER_ADDED_INFO_FILE_NAME,
-          JSON.stringify(newInfoObj),
-          {
-            baseDir: BaseDirectory.AppLocalData,
-          }
-        );
-        dataDispatch({ type: "addInfo", infoObj: newInfoObj });
-      } catch (e) {
-        let msg;
-        if (e instanceof Error) msg = e.message;
-        else msg = String(e);
-        setMsg(msg);
-        showToast();
-        closeToastInSec(5);
-      }
-    }
-
-    handleClose();
-  };
-
-  const handleClose = () => {
-    setInputText("");
-    dataDispatch({ type: "cancel" });
-    const modal: any = document.getElementById("add_info_modal")!;
-    modal.close();
-  };
+  const {
+    id,
+    savedInfoList,
+    inputText,
+    setInputText,
+    editMode,
+    editText,
+    handleEditMode,
+    handleEditText,
+    handleSaveNewInfo,
+    handleSaveAfterEdit,
+    handleDelete,
+    handleClose,
+  } = useInfoHandler();
 
   return (
     <dialog id="add_info_modal" className="modal">
@@ -63,7 +33,41 @@ export default function AddInfoModal() {
         </h3>
         <ul className="list-disc list-inside">
           {savedInfoList.map((info, i) => (
-            <li key={i}>{info}</li>
+            <li key={i}>
+              <span>
+                {editMode[i] ? (
+                  <>
+                    <input
+                      className="input input-bordered input-sm"
+                      value={editText[i]}
+                      onChange={(e) => handleEditText(i, e.currentTarget.value)}
+                    ></input>{" "}
+                    <button
+                      className="ml-5"
+                      onClick={() => handleSaveAfterEdit(i)}
+                    >
+                      <ArrowEnterIcon width="20" height="20" />
+                    </button>
+                  </>
+                ) : (
+                  info
+                )}
+              </span>
+              {!editMode[i] && (
+                <button
+                  className="ml-5"
+                  onClick={() => {
+                    handleEditMode(i);
+                    handleEditText(i, info);
+                  }}
+                >
+                  <EditIcon width="20" height="20" />
+                </button>
+              )}
+              <button className="ml-2" onClick={handleDelete.bind(null, i)}>
+                <DeleteIcon width="20" height="20" />
+              </button>
+            </li>
           ))}
         </ul>
         {/* <h3 className="font-bold text-lg">추가 정보를 입력하세요.</h3> */}
@@ -81,7 +85,7 @@ export default function AddInfoModal() {
         </label>
         <button
           className="btn btn-primary btn-sm block ml-auto"
-          onClick={handleSave}
+          onClick={handleSaveNewInfo}
         >
           저장
         </button>

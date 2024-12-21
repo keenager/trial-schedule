@@ -58,10 +58,7 @@ export function CaseNumCell({ tc }: { tc: TcUnit }) {
     >
       <div
         className="basis-1/3 w-full h-full"
-        onMouseOver={() => {
-          console.log("mouse over");
-          hideDetailDiv();
-        }}
+        onMouseOver={hideDetailDiv}
       ></div>
       <div
         className="basis-1/3 cursor-default"
@@ -81,7 +78,7 @@ export function CaseNumCell({ tc }: { tc: TcUnit }) {
         onMouseOver={hideDetailDiv}
       >
         {hasInfo && (
-          <div className="tooltip" data-tip={infoObj[id]}>
+          <div className="tooltip z-20" data-tip={infoObj[id]}>
             {InfoIcon}
           </div>
         )}
