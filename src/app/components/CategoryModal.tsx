@@ -2,7 +2,8 @@ import { useState } from "react";
 import { useData, useDataDispatch } from "../store/DataProvider";
 import { BaseDirectory, writeTextFile } from "@tauri-apps/plugin-fs";
 import { CATEGORY_FILE_NAME } from "@/lib/constants";
-import { closeToastInSec, showToast, useSetMsg } from "../store/ToastProvider";
+import { useSetMsg } from "../store/ToastProvider";
+import { toastErrorMsg } from "@/lib/errorHandleFunc";
 
 export default function CategoryModal() {
   const [inputText, setInputText] = useState("");
@@ -10,9 +11,9 @@ export default function CategoryModal() {
   const dataDispatch = useDataDispatch();
   const setMsg = useSetMsg();
 
-  const savedCategoryList = [...categoryList];
-
   const handleSave = async () => {
+    const savedCategoryList = [...categoryList];
+
     if (inputText !== "") {
       savedCategoryList.push(inputText);
 
@@ -26,12 +27,7 @@ export default function CategoryModal() {
         );
         dataDispatch({ type: "category", categoryList: savedCategoryList });
       } catch (e) {
-        let msg;
-        if (e instanceof Error) msg = e.message;
-        else msg = String(e);
-        setMsg(msg);
-        showToast();
-        closeToastInSec(5);
+        toastErrorMsg(e, setMsg);
       }
     }
 
@@ -52,12 +48,7 @@ export default function CategoryModal() {
       });
       dataDispatch({ type: "category", categoryList: newCategoryList });
     } catch (e) {
-      let msg;
-      if (e instanceof Error) msg = e.message;
-      else msg = String(e);
-      setMsg(msg);
-      showToast();
-      closeToastInSec(5);
+      toastErrorMsg(e, setMsg);
     }
   };
 

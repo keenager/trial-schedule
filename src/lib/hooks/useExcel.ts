@@ -26,7 +26,7 @@ export default function useExcel() {
       document.getElementById("toast")!.style.display = "flex";
       setMsg(Object.values(caseList[0])[0]);
       showToast();
-      closeToastInSec(5);
+      closeToastInSec(7);
       return;
     }
 

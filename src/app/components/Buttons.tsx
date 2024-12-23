@@ -4,12 +4,13 @@ import { CATEGORY_FILE_NAME } from "@/lib/constants";
 import useExcel from "@/lib/hooks/useExcel";
 import { hideDetailDiv } from "@/lib/cell";
 import { useDataDispatch } from "../store/DataProvider";
-import { closeToastInSec, showToast, useSetMsg } from "../store/ToastProvider";
+import { useSetMsg } from "../store/ToastProvider";
 import DateSelectModal from "./DateSelectModal";
 import CategoryModal from "./CategoryModal";
+import { toastErrorMsg } from "@/lib/errorHandleFunc";
 
 export default function Buttons() {
-  const handleExcel = useExcel();
+  const excelHandler = useExcel();
   const dataDispatch = useDataDispatch();
   const setMsg = useSetMsg();
 
@@ -37,14 +38,14 @@ export default function Buttons() {
     try {
       getCategoryListFromFile();
     } catch (e) {
-      let msg;
-      if (e instanceof Error) msg = e.message;
-      else msg = String(e);
-      setMsg(msg);
-      showToast();
-      closeToastInSec(5);
+      toastErrorMsg(e, setMsg);
     }
   }, []);
+
+  const handleLoadExcelFile = () => {
+    dataDispatch({ type: "cancel" });
+    excelHandler();
+  };
 
   return (
     <section
@@ -64,7 +65,7 @@ export default function Buttons() {
         <CategoryModal />
       </div>
       <div className="flex justify-end items-center gap-3">
-        <button className="btn btn-sm btn-accent" onClick={handleExcel}>
+        <button className="btn btn-sm btn-accent" onClick={handleLoadExcelFile}>
           엑셀 파일 불러오기
         </button>
 
