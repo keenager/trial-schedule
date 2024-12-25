@@ -16,7 +16,7 @@
     },
     {
       "identifier": "fs:allow-exists",
-      "allow": [{ "path": "$APPLOCALDATA/*" }]
+      "allow": [{ "path": "$APPLOCALDATA/*" }, { "path": "$DOWNLOAD/*" }]
     }
   ]
 }

@@ -1,5 +1,4 @@
 import { invoke } from "@tauri-apps/api/core";
-import { open } from "@tauri-apps/plugin-dialog";
 import { Case } from "@/models/tcModel";
 import { useDataDispatch } from "@/app/store/DataProvider";
 import { useCheckListDispatch } from "@/app/store/CheckListProvider";
@@ -8,17 +7,21 @@ import {
   showToast,
   useSetMsg,
 } from "@/app/store/ToastProvider";
+import {
+  BaseDirectory,
+  readTextFile,
+  writeTextFile,
+} from "@tauri-apps/plugin-fs";
+import { SETTINGS_FILE_NAME } from "../constants";
+import { SettingsType } from "../saveDataType";
+import { toastErrorMsg } from "../errorHandleFunc";
 
 export default function useExcel() {
   const dataDispatch = useDataDispatch();
   const checkListDispatch = useCheckListDispatch();
   const setMsg = useSetMsg();
 
-  const readExcelHandler = async () => {
-    const filePath = await open({ multiple: false, directory: false });
-
-    if (!filePath) return;
-
+  const readExcelHandler = async (filePath: string) => {
     const caseList = await invoke<Case[]>("read_data_from_excel", { filePath });
 
     // 에러 발생한 경우
@@ -39,6 +42,22 @@ export default function useExcel() {
       ).fill(true),
       isChecked: true,
     });
+
+    // 읽었던 파일 경로를 settings 파일에 저장하기
+    try {
+      const settings = JSON.parse(
+        await readTextFile(SETTINGS_FILE_NAME, {
+          baseDir: BaseDirectory.AppLocalData,
+        })
+      ) as SettingsType;
+      settings.lastLoadedFile = filePath;
+
+      await writeTextFile(SETTINGS_FILE_NAME, JSON.stringify(settings), {
+        baseDir: BaseDirectory.AppLocalData,
+      });
+    } catch (error) {
+      toastErrorMsg(error, setMsg);
+    }
   };
 
   return readExcelHandler;

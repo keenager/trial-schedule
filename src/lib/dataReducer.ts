@@ -54,7 +54,6 @@ export function dataReducer(
     }
 
     case "load": {
-      console.log("action.caseList: ", action.caseList);
       // 저장된 사건 부호를 이용해 사건들 필터링
       const filteredCaseList = action.caseList.filter((c) =>
         state.categoryList.some((cate) => c.사건번호.includes(cate))

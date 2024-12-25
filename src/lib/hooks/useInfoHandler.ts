@@ -25,9 +25,13 @@ export default function useInfoHandler() {
   const saveInfo = async (infoList: string[]) => {
     const newInfoObj = { ...infoObj, [id]: [...infoList] };
     try {
-      await writeTextFile(USER_ADDED_INFO_FILE_NAME, JSON.stringify(infoObj), {
-        baseDir: BaseDirectory.AppLocalData,
-      });
+      await writeTextFile(
+        USER_ADDED_INFO_FILE_NAME,
+        JSON.stringify(newInfoObj),
+        {
+          baseDir: BaseDirectory.AppLocalData,
+        }
+      );
     } catch (error) {
       toastErrorMsg(error, setMsg);
     }
@@ -36,16 +40,16 @@ export default function useInfoHandler() {
 
   const handleSaveNewInfo = async () => {
     if (inputText !== "") {
-      saveInfo(savedInfoList);
       savedInfoList.push(inputText);
+      saveInfo(savedInfoList);
     }
     setInputText("");
     // handleClose();
   };
 
   const handleSaveAfterEdit = async (idx: number) => {
-    saveInfo(savedInfoList);
     savedInfoList[idx] = editText[idx];
+    saveInfo(savedInfoList);
     handleEditMode(idx);
   };
 
@@ -66,8 +70,8 @@ export default function useInfoHandler() {
   };
 
   const handleDelete = (idx: number) => {
-    saveInfo(savedInfoList);
     savedInfoList.splice(idx, 1);
+    saveInfo(savedInfoList);
   };
 
   const handleClose = () => {

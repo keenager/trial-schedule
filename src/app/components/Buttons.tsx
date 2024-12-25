@@ -8,6 +8,7 @@ import { useSetMsg } from "../store/ToastProvider";
 import DateSelectModal from "./DateSelectModal";
 import CategoryModal from "./CategoryModal";
 import { toastErrorMsg } from "@/lib/errorHandleFunc";
+import { open } from "@tauri-apps/plugin-dialog";
 
 export default function Buttons() {
   const excelHandler = useExcel();
@@ -42,9 +43,12 @@ export default function Buttons() {
     }
   }, []);
 
-  const handleLoadExcelFile = () => {
+  const handleLoadExcelFile = async () => {
     dataDispatch({ type: "cancel" });
-    excelHandler();
+
+    const filePath = await open({ multiple: false, directory: false });
+    if (!filePath) return;
+    excelHandler(filePath);
   };
 
   return (
