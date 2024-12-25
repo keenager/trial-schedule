@@ -31,29 +31,29 @@ export default function AddInfoModal() {
         <h3 className="font-bold text-lg text-center mb-3">
           {id} 사건 관련 정보
         </h3>
-        <ul className="list-disc list-inside">
+        <ul className="list-disc list-outside ml-5">
           {savedInfoList.map((info, i) => (
             <li key={i}>
-              <span>
+              <div className="inline-block w-[80%] break-all align-top">
                 {editMode[i] ? (
-                  <>
-                    <input
-                      className="input input-bordered input-sm"
-                      value={editText[i]}
-                      onChange={(e) => handleEditText(i, e.currentTarget.value)}
-                    ></input>{" "}
-                    <button
-                      className="ml-5"
-                      onClick={() => handleSaveAfterEdit(i)}
-                    >
-                      <ArrowEnterIcon width="20" height="20" />
-                    </button>
-                  </>
+                  <input
+                    className="input input-bordered input-sm w-full"
+                    value={editText[i]}
+                    autoFocus
+                    onChange={(e) => handleEditText(i, e.currentTarget.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") handleSaveAfterEdit(i);
+                    }}
+                  ></input>
                 ) : (
                   info
                 )}
-              </span>
-              {!editMode[i] && (
+              </div>
+              {editMode[i] ? (
+                <button className="ml-5" onClick={() => handleSaveAfterEdit(i)}>
+                  <ArrowEnterIcon width="20" height="20" />
+                </button>
+              ) : (
                 <button
                   className="ml-5"
                   onClick={() => {
@@ -79,8 +79,12 @@ export default function AddInfoModal() {
             type="text"
             placeholder="Type here"
             className="input input-bordered w-full"
+            autoFocus
             value={inputText}
             onChange={(e) => setInputText(e.currentTarget.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") handleSaveNewInfo();
+            }}
           />
         </label>
         <button

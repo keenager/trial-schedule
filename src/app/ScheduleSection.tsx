@@ -7,7 +7,7 @@ import TimeTable from "./components/TimeTable";
 import ContextMenu from "./components/ContextMenu";
 import CaseDetail from "./components/CaseDetail";
 import AddInfoModal from "./components/AddInfoModal";
-import { SETTINGS_FILE_NAME, USER_ADDED_INFO_FILE_NAME } from "@/lib/constants";
+import { SETTINGS_FILE_NAME } from "@/lib/constants";
 import { SettingsType } from "@/lib/saveDataType";
 import { toastErrorMsg } from "@/lib/errorHandleFunc";
 import { useSetMsg } from "./store/ToastProvider";
@@ -40,6 +40,8 @@ export default function ScheduleSection() {
             })
           );
 
+          dataDispatch({ type: "addInfo", infoObj: settings.userAddedInfo });
+
           const lastLoadedFileExists = await exists(settings.lastLoadedFile);
 
           // 이전에 읽었던 파일이 존재하는 경우
@@ -56,6 +58,7 @@ export default function ScheduleSection() {
           // settings 파일이 없는 경우
           const settings: SettingsType = {
             lastLoadedFile: "",
+            userAddedInfo: {},
           };
 
           await writeTextFile(SETTINGS_FILE_NAME, JSON.stringify(settings), {
@@ -67,21 +70,7 @@ export default function ScheduleSection() {
       }
     }
 
-    async function getUserAddedInfoFromFile() {
-      const fileExists = await exists(USER_ADDED_INFO_FILE_NAME, {
-        baseDir: BaseDirectory.AppLocalData,
-      });
-      const contents = fileExists
-        ? await readTextFile(USER_ADDED_INFO_FILE_NAME, {
-            baseDir: BaseDirectory.AppLocalData,
-          })
-        : "{}";
-      const infoObj = JSON.parse(contents);
-      dataDispatch({ type: "addInfo", infoObj });
-    }
-
     getSettings();
-    getUserAddedInfoFromFile();
   }, [dataDispatch, excelHandler, setMsg]);
 
   const checkedDateList = data.dateList.filter((_, i) => checkList[i]);

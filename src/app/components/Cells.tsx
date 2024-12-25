@@ -2,6 +2,7 @@ import React from "react";
 import { TcUnit } from "@/models/tcModel";
 import { useData, useDataDispatch } from "@/app/store/DataProvider";
 import { hideDetailDiv } from "@/lib/cell";
+import InfoIcon from "./icons/InfoIcon";
 
 export function TimeCell({ time }: { time: string }) {
   return (
@@ -79,26 +80,10 @@ export function CaseNumCell({ tc }: { tc: TcUnit }) {
       >
         {hasInfo && (
           <div className="tooltip z-20" data-tip={infoObj[id]}>
-            {InfoIcon}
+            <InfoIcon />
           </div>
         )}
       </div>
     </div>
   );
 }
-
-const InfoIcon = (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    fill="none"
-    viewBox="0 0 24 24"
-    className="stroke-info h-6 w-6 shrink-0"
-  >
-    <path
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      strokeWidth="2"
-      d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-    ></path>
-  </svg>
-);

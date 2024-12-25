@@ -1,10 +1,17 @@
 import { useState } from "react";
-import { BaseDirectory, writeTextFile } from "@tauri-apps/plugin-fs";
+import {
+  BaseDirectory,
+  readTextFile,
+  writeTextFile,
+} from "@tauri-apps/plugin-fs";
 import { getTimeList } from "@/models/tcModel";
 import { useData, useDataDispatch } from "@/app/store/DataProvider";
 import { useSetMsg } from "@/app/store/ToastProvider";
-import { USER_ADDED_INFO_FILE_NAME } from "@/lib/constants";
+import { SETTINGS_FILE_NAME } from "@/lib/constants";
 import { toastErrorMsg } from "../errorHandleFunc";
+import { SettingsType } from "../saveDataType";
+import { InfoObjType } from "../dataType";
+import { confirm } from "@tauri-apps/plugin-dialog";
 
 export default function useInfoHandler() {
   const { infoObj, firstTarget } = useData();
@@ -15,27 +22,31 @@ export default function useInfoHandler() {
 
   const id = firstTarget.date + "-" + getTimeList()[firstTarget.index!];
   const savedInfoList = infoObj[id] || [];
-  const [editMode, setEditMode] = useState<boolean[]>(
-    new Array(savedInfoList.length).fill(false)
-  );
+  const [editMode, setEditMode] = useState<boolean[]>([]);
+
   const [editText, setEditText] = useState<string[]>(
     new Array(savedInfoList.length).fill("")
   );
 
   const saveInfo = async (infoList: string[]) => {
-    const newInfoObj = { ...infoObj, [id]: [...infoList] };
+    const newInfoObj: InfoObjType = { ...infoObj, [id]: [...infoList] };
     try {
-      await writeTextFile(
-        USER_ADDED_INFO_FILE_NAME,
-        JSON.stringify(newInfoObj),
-        {
+      const settings = JSON.parse(
+        await readTextFile(SETTINGS_FILE_NAME, {
           baseDir: BaseDirectory.AppLocalData,
-        }
-      );
+        })
+      ) as SettingsType;
+
+      settings.userAddedInfo = newInfoObj;
+
+      await writeTextFile(SETTINGS_FILE_NAME, JSON.stringify(settings), {
+        baseDir: BaseDirectory.AppLocalData,
+      });
     } catch (error) {
       toastErrorMsg(error, setMsg);
     }
     dataDispatch({ type: "addInfo", infoObj: newInfoObj });
+    setEditMode(new Array(newInfoObj[id].length).fill(false));
   };
 
   const handleSaveNewInfo = async () => {
@@ -48,9 +59,13 @@ export default function useInfoHandler() {
   };
 
   const handleSaveAfterEdit = async (idx: number) => {
-    savedInfoList[idx] = editText[idx];
-    saveInfo(savedInfoList);
-    handleEditMode(idx);
+    if (editText[idx] === "") {
+      handleDelete(idx);
+    } else {
+      savedInfoList[idx] = editText[idx];
+      saveInfo(savedInfoList);
+      handleEditMode(idx);
+    }
   };
 
   const handleEditMode = (idx: number) => {
@@ -69,9 +84,16 @@ export default function useInfoHandler() {
     });
   };
 
-  const handleDelete = (idx: number) => {
-    savedInfoList.splice(idx, 1);
-    saveInfo(savedInfoList);
+  const handleDelete = async (idx: number) => {
+    const confirmed = await confirm("삭제할까요?", {
+      title: "경고",
+      kind: "warning",
+    });
+    if (confirmed) {
+      savedInfoList.splice(idx, 1);
+      setEditMode(new Array(savedInfoList.length).fill(false));
+      saveInfo(savedInfoList);
+    }
   };
 
   const handleClose = () => {
