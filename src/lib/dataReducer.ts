@@ -29,6 +29,7 @@ export function dataReducer(
   const refresh = (tcObj: TcObjType): ScheduleDataType => {
     return {
       ...initialValue,
+      categoryList: state.categoryList,
       caseList: state.caseList,
       filteredCaseList: state.filteredCaseList,
       dateList: state.dateList,
