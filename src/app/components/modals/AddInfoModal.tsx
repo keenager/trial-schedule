@@ -1,6 +1,6 @@
-import EditIcon from "./icons/EditIcon";
-import DeleteIcon from "./icons/DeleteIcon";
-import ArrowEnterIcon from "./icons/ArrowEnterIcon";
+import EditIcon from "../icons/EditIcon";
+import DeleteIcon from "../icons/DeleteIcon";
+import ArrowEnterIcon from "../icons/ArrowEnterIcon";
 import useInfoHandler from "@/lib/hooks/useInfoHandler";
 
 export default function AddInfoModal() {

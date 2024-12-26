@@ -1,4 +1,4 @@
-import { useData, useDataDispatch } from "../store/DataProvider";
+import { useData, useDataDispatch } from "@/app/store/DataProvider";
 import { hideContextMenu } from "@/lib/contextMenu";
 
 export default function ContextMenu() {

@@ -1,9 +1,10 @@
 import { useState } from "react";
-import { useData, useDataDispatch } from "../store/DataProvider";
 import { BaseDirectory, writeTextFile } from "@tauri-apps/plugin-fs";
-import { CATEGORY_FILE_NAME } from "@/lib/constants";
-import { useSetMsg } from "../store/ToastProvider";
+import { useData, useDataDispatch } from "@/app/store/DataProvider";
+import { useSetMsg } from "@/app/store/ToastProvider";
 import { toastErrorMsg } from "@/lib/errorHandleFunc";
+import { CATEGORY_FILE_NAME } from "@/lib/constants";
+import DeleteIcon from "../icons/DeleteIcon";
 
 export default function CategoryModal() {
   const [inputText, setInputText] = useState("");
@@ -12,26 +13,24 @@ export default function CategoryModal() {
   const setMsg = useSetMsg();
 
   const handleSave = async () => {
-    const savedCategoryList = [...categoryList];
-
-    if (inputText !== "") {
-      savedCategoryList.push(inputText);
-
-      try {
-        await writeTextFile(
-          CATEGORY_FILE_NAME,
-          JSON.stringify(savedCategoryList),
-          {
-            baseDir: BaseDirectory.AppLocalData,
-          }
-        );
-        dataDispatch({ type: "category", categoryList: savedCategoryList });
-      } catch (e) {
-        toastErrorMsg(e, setMsg);
-      }
+    if (inputText === "") return;
+    if (categoryList.includes(inputText)) {
+      setInputText("");
+      return;
     }
 
-    handleClose();
+    const newCategoryList = [...categoryList];
+    newCategoryList.push(inputText);
+
+    try {
+      await writeTextFile(CATEGORY_FILE_NAME, JSON.stringify(newCategoryList), {
+        baseDir: BaseDirectory.AppLocalData,
+      });
+      dataDispatch({ type: "category", categoryList: newCategoryList });
+      setInputText("");
+    } catch (e) {
+      toastErrorMsg(e, setMsg);
+    }
   };
 
   const handleClose = () => {
@@ -66,7 +65,13 @@ export default function CategoryModal() {
           {categoryList.map((cate, i) => (
             <li key={i} className="">
               <div className="inline">
-                {cate} <DelBtn onClick={() => handleDelete(cate)} />
+                {cate}
+                <button
+                  className="ml-3 items-center"
+                  onClick={() => handleDelete(cate)}
+                >
+                  <DeleteIcon width="20" height="20" />
+                </button>
               </div>
             </li>
           ))}
@@ -79,9 +84,13 @@ export default function CategoryModal() {
           </div>
           <input
             type="text"
+            autoFocus
             placeholder="Type here"
             className="input input-bordered w-full"
             value={inputText}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") handleSave();
+            }}
             onChange={(e) => setInputText(e.currentTarget.value)}
           />
         </label>
@@ -95,27 +104,3 @@ export default function CategoryModal() {
     </dialog>
   );
 }
-
-const DelBtn = ({ onClick }: { onClick: () => void }) => {
-  return (
-    <button
-      className="btn btn-square btn-outline btn-xs ml-3"
-      onClick={onClick}
-    >
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        className="h-4 w-4"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth="2"
-          d="M6 18L18 6M6 6l12 12"
-        />
-      </svg>
-    </button>
-  );
-};

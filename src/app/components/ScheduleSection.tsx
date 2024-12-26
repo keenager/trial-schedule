@@ -1,18 +1,18 @@
 import { useEffect, useRef } from "react";
 import { exists, readTextFile, writeTextFile } from "@tauri-apps/plugin-fs";
 import { BaseDirectory } from "@tauri-apps/api/path";
-import { useData, useDataDispatch } from "./store/DataProvider";
-import { useCheckList } from "./store/CheckListProvider";
-import TimeTable from "./components/TimeTable";
-import ContextMenu from "./components/ContextMenu";
-import CaseDetail from "./components/CaseDetail";
-import AddInfoModal from "./components/AddInfoModal";
+import { confirm } from "@tauri-apps/plugin-dialog";
+import { useData, useDataDispatch } from "@/app/store/DataProvider";
+import { useCheckList } from "@/app/store/CheckListProvider";
+import { useSetMsg } from "@/app/store/ToastProvider";
 import { SETTINGS_FILE_NAME } from "@/lib/constants";
 import { SettingsType } from "@/lib/saveDataType";
 import { toastErrorMsg } from "@/lib/errorHandleFunc";
-import { useSetMsg } from "./store/ToastProvider";
 import useExcel from "@/lib/hooks/useExcel";
-import { confirm } from "@tauri-apps/plugin-dialog";
+import TimeTable from "./timetable/TimeTable";
+import ContextMenu from "./timetable/ContextMenu";
+import CaseDetail from "./timetable/CaseDetail";
+import AddInfoModal from "./modals/AddInfoModal";
 
 export default function ScheduleSection() {
   const data = useData();

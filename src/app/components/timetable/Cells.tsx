@@ -2,7 +2,7 @@ import React from "react";
 import { TcUnit } from "@/models/tcModel";
 import { useData, useDataDispatch } from "@/app/store/DataProvider";
 import { hideDetailDiv } from "@/lib/cell";
-import InfoIcon from "./icons/InfoIcon";
+import InfoIcon from "@/app/components/icons/InfoIcon";
 
 export function TimeCell({ time }: { time: string }) {
   return (
@@ -79,7 +79,7 @@ export function CaseNumCell({ tc }: { tc: TcUnit }) {
         onMouseOver={hideDetailDiv}
       >
         {hasInfo && (
-          <div className="tooltip z-20" data-tip={infoObj[id]}>
+          <div className="tooltip z-20" data-tip={infoObj[id].join(" // ")}>
             <InfoIcon />
           </div>
         )}

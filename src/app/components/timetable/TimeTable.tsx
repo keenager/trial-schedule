@@ -1,6 +1,6 @@
 import React from "react";
 import { TcUnit } from "@/models/tcModel";
-import { useData } from "../store/DataProvider";
+import { useData } from "@/app/store/DataProvider";
 import TwoHourColumn from "./TwoHourColumn";
 
 export default function TimeTable({
@@ -75,7 +75,7 @@ export default function TimeTable({
               <tr key={dt}>
                 <th>{i + 1}</th>
                 <td>{dt}</td>
-                <td>{infoObj[dt]}</td>
+                <td>{infoObj[dt].join(" // ")}</td>
               </tr>
             ))}
           </tbody>

@@ -1,6 +1,9 @@
 import React from "react";
-import { useCheckList, useCheckListDispatch } from "../store/CheckListProvider";
-import { useData } from "../store/DataProvider";
+import {
+  useCheckList,
+  useCheckListDispatch,
+} from "@/app/store/CheckListProvider";
+import { useData } from "@/app/store/DataProvider";
 
 export default function DateSelectModal() {
   const data = useData();

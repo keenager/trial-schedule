@@ -1,4 +1,4 @@
-import { useData } from "../store/DataProvider";
+import { useData } from "@/app/store/DataProvider";
 
 export default function CaseDetail() {
   const data = useData();

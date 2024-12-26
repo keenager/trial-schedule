@@ -4,7 +4,7 @@ import DataProvider from "./store/DataProvider";
 import CheckListProvider from "./store/CheckListProvider";
 import ToastProvider from "./store/ToastProvider";
 import Buttons from "./components/Buttons";
-import ScheduleSection from "./ScheduleSection";
+import ScheduleSection from "./components/ScheduleSection";
 import Toast from "./components/Toast";
 
 export default function Home() {
