@@ -7,14 +7,8 @@ import {
   showToast,
   useSetMsg,
 } from "@/app/store/ToastProvider";
-import {
-  BaseDirectory,
-  readTextFile,
-  writeTextFile,
-} from "@tauri-apps/plugin-fs";
-import { SETTINGS_FILE_NAME } from "../constants";
-import { SettingsType } from "../saveDataType";
 import { toastErrorMsg } from "../errorHandleFunc";
+import { loadSettings, saveSettings } from "../settings";
 
 export default function useExcel() {
   const dataDispatch = useDataDispatch();
@@ -45,16 +39,9 @@ export default function useExcel() {
 
     // 읽었던 파일 경로를 settings 파일에 저장하기
     try {
-      const settings = JSON.parse(
-        await readTextFile(SETTINGS_FILE_NAME, {
-          baseDir: BaseDirectory.AppLocalData,
-        })
-      ) as SettingsType;
+      const settings = await loadSettings();
       settings.lastLoadedFile = filePath;
-
-      await writeTextFile(SETTINGS_FILE_NAME, JSON.stringify(settings), {
-        baseDir: BaseDirectory.AppLocalData,
-      });
+      await saveSettings(settings);
     } catch (error) {
       toastErrorMsg(error, setMsg);
     }

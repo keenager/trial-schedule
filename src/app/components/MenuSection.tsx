@@ -1,54 +1,31 @@
-import React, { useEffect } from "react";
-import { BaseDirectory, exists, readTextFile } from "@tauri-apps/plugin-fs";
+import React from "react";
 import { open } from "@tauri-apps/plugin-dialog";
 import { useDataDispatch } from "../store/DataProvider";
-import { useSetMsg } from "../store/ToastProvider";
-import { CATEGORY_FILE_NAME } from "@/lib/constants";
 import useExcel from "@/lib/hooks/useExcel";
 import { hideDetailDiv } from "@/lib/cell";
-import { toastErrorMsg } from "@/lib/errorHandleFunc";
 import DateSelectModal from "./modals/DateSelectModal";
 import CategoryModal from "./modals/CategoryModal";
+import { loadSettings } from "@/lib/settings";
 
-export default function Buttons() {
+export default function MenuSection() {
   const excelHandler = useExcel();
   const dataDispatch = useDataDispatch();
-  const setMsg = useSetMsg();
 
-  useEffect(() => {
-    async function getCategoryListFromFile() {
-      const fileExists = await exists(CATEGORY_FILE_NAME, {
-        baseDir: BaseDirectory.AppLocalData,
-      });
-
-      const contents = fileExists
-        ? await readTextFile(CATEGORY_FILE_NAME, {
-            baseDir: BaseDirectory.AppLocalData,
-          })
-        : "[]";
-      const categoryList = JSON.parse(contents);
-
-      if (categoryList.length > 0) {
-        dataDispatch({ type: "category", categoryList });
-      } else {
-        const modal: any = document.getElementById("category_modal")!;
-        modal.showModal();
-      }
-    }
-
-    try {
-      getCategoryListFromFile();
-    } catch (e) {
-      toastErrorMsg(e, setMsg);
-    }
-  }, []);
+  const openCategoryModal = () => {
+    const modal: any = document.getElementById("category_modal")!;
+    modal.showModal();
+  };
 
   const handleLoadExcelFile = async () => {
     dataDispatch({ type: "cancel" });
 
     const filePath = await open({ multiple: false, directory: false });
     if (!filePath) return;
-    excelHandler(filePath);
+    await excelHandler(filePath);
+
+    // 사건번호가 지정되어 있지 않으면 모달창 띄우기
+    const settings = await loadSettings();
+    if (!settings.categoryList?.length) openCategoryModal();
   };
 
   return (
@@ -57,13 +34,7 @@ export default function Buttons() {
       onMouseOver={hideDetailDiv}
     >
       <div className="flex justify-start items-center gap-3">
-        <button
-          className="btn btn-sm"
-          onClick={() => {
-            const modal: any = document.getElementById("category_modal")!;
-            modal.showModal();
-          }}
-        >
+        <button className="btn btn-sm" onClick={openCategoryModal}>
           사건 부호
         </button>
         <CategoryModal />

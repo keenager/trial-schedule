@@ -1,10 +1,9 @@
 import { useState } from "react";
-import { BaseDirectory, writeTextFile } from "@tauri-apps/plugin-fs";
 import { useData, useDataDispatch } from "@/app/store/DataProvider";
 import { useSetMsg } from "@/app/store/ToastProvider";
 import { toastErrorMsg } from "@/lib/errorHandleFunc";
-import { CATEGORY_FILE_NAME } from "@/lib/constants";
 import DeleteIcon from "../icons/DeleteIcon";
+import { loadSettings, saveSettings } from "@/lib/settings";
 
 export default function CategoryModal() {
   const [inputText, setInputText] = useState("");
@@ -23,9 +22,9 @@ export default function CategoryModal() {
     newCategoryList.push(inputText);
 
     try {
-      await writeTextFile(CATEGORY_FILE_NAME, JSON.stringify(newCategoryList), {
-        baseDir: BaseDirectory.AppLocalData,
-      });
+      const settings = await loadSettings();
+      settings.categoryList = newCategoryList;
+      await saveSettings(settings);
       dataDispatch({ type: "category", categoryList: newCategoryList });
       setInputText("");
     } catch (e) {
@@ -40,11 +39,10 @@ export default function CategoryModal() {
   };
 
   const handleDelete = async (target: string) => {
-    const newCategoryList = categoryList.filter((cate) => cate !== target);
     try {
-      await writeTextFile(CATEGORY_FILE_NAME, JSON.stringify(newCategoryList), {
-        baseDir: BaseDirectory.AppLocalData,
-      });
+      const newCategoryList = categoryList.filter((cate) => cate !== target);
+      const settings = await loadSettings();
+      await saveSettings({ ...settings, categoryList: newCategoryList });
       dataDispatch({ type: "category", categoryList: newCategoryList });
     } catch (e) {
       toastErrorMsg(e, setMsg);
