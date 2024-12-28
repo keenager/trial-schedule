@@ -6,7 +6,7 @@ import { useDataDispatch } from "@/app/store/DataProvider";
 import { exists } from "@tauri-apps/plugin-fs";
 import { BaseDirectory } from "@tauri-apps/api/path";
 import { SETTINGS_FILE_NAME } from "@/lib/constants";
-import { SettingsType } from "@/lib/saveDataType";
+import { SettingsType } from "@/lib/settings";
 import { toastErrorMsg } from "@/lib/errorHandleFunc";
 import DataProvider from "./store/DataProvider";
 import CheckListProvider from "./store/CheckListProvider";

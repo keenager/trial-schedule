@@ -18,11 +18,11 @@ export default function RootLayout({
         {/* <header className="fixed left-0 right-0 top-0 z-10 dark:bg-gray-900">
           
         </header> */}
-        <main className="h-[95%] flex flex-col bg-white px-8 py-8 dark:bg-gray-900">
+        <main className="h-[95%] px-8 py-8 flex flex-col bg-white dark:bg-gray-900">
           {children}
         </main>
-        <footer className="h-[5%] text-center bg-white dark:bg-gray-900 no-print">
-          <span>Developed by RedTraining</span>
+        <footer className="h-[5%] px-8 bg-white dark:bg-gray-900 text-right no-print">
+          <span className="badge badge-outline">keenager@scourt.go.kr</span>
         </footer>
       </body>
     </html>

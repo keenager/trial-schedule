@@ -1,13 +1,13 @@
-import { TcUnit } from "../models/tcModel";
-import { DataActionType, ScheduleDataType, TcObjType } from "./dataType";
+import { TcUnit } from "@/models/tcModel";
+import { DataActionType, ScheduleDataType, TcObjType } from "@/lib/dataType";
 import {
   copy,
   getDateTcFromCaseList,
   getUnselectedTcObj,
   merge,
   minmax,
-} from "./dataHandleFunc";
-import { hideContextMenu } from "./contextMenu";
+} from "../dataHandleFunc";
+import { hideContextMenu } from "../contextMenu";
 
 export const initialValue: ScheduleDataType = {
   categoryList: [],

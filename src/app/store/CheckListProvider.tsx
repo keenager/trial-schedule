@@ -1,5 +1,7 @@
 import React, { createContext, useContext, useReducer } from "react";
-import checkListReducer, { CheckListActionType } from "@/lib/checkListReducer";
+import checkListReducer, {
+  CheckListActionType,
+} from "@/lib/reducers/checkListReducer";
 
 const CheckListContext = createContext<boolean[]>([]);
 const CheckListDispatchContext = createContext<
