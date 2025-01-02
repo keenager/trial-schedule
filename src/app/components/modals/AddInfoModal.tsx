@@ -6,7 +6,7 @@ import useInfoHandler from "@/lib/hooks/useInfoHandler";
 export default function AddInfoModal() {
   const {
     id,
-    savedInfoList,
+    infoListOfTheTime,
     inputText,
     setInputText,
     editMode,
@@ -32,7 +32,7 @@ export default function AddInfoModal() {
           {id} 사건 관련 정보
         </h3>
         <ul className="list-disc list-outside ml-5">
-          {savedInfoList.map((info, i) => (
+          {infoListOfTheTime.map((info, i) => (
             <li key={i}>
               <div className="inline-block w-[80%] break-all align-top">
                 {editMode[i] ? (

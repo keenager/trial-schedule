@@ -1,10 +1,10 @@
 import { useState } from "react";
+import { confirm } from "@tauri-apps/plugin-dialog";
 import { getTimeList } from "@/models/tcModel";
 import { useData, useDataDispatch } from "@/app/store/DataProvider";
 import { useSetMsg } from "@/app/store/ToastProvider";
 import { toastErrorMsg } from "../errorHandleFunc";
 import { InfoObjType } from "../dataType";
-import { confirm } from "@tauri-apps/plugin-dialog";
 import { loadSettings, saveSettings } from "../settings";
 
 export default function useInfoHandler() {
@@ -15,15 +15,18 @@ export default function useInfoHandler() {
   const [inputText, setInputText] = useState("");
 
   const id = firstTarget.date + "-" + getTimeList()[firstTarget.index!];
-  const savedInfoList = infoObj[id] || [];
+  const infoListOfTheTime = infoObj[id] || [];
   const [editMode, setEditMode] = useState<boolean[]>([]);
 
   const [editText, setEditText] = useState<string[]>(
-    new Array(savedInfoList.length).fill("")
+    new Array(infoListOfTheTime.length).fill("")
   );
 
   const saveInfo = async (infoList: string[]) => {
     const newInfoObj: InfoObjType = { ...infoObj, [id]: [...infoList] };
+    const hasInfo: boolean = !!infoList.length;
+    if (!hasInfo) delete newInfoObj[id];
+
     try {
       const settings = await loadSettings();
       settings.userAddedInfo = newInfoObj;
@@ -32,13 +35,13 @@ export default function useInfoHandler() {
     } catch (error) {
       toastErrorMsg(error, setMsg);
     }
-    setEditMode(new Array(newInfoObj[id].length).fill(false));
+    setEditMode(hasInfo ? new Array(newInfoObj[id].length).fill(false) : []);
   };
 
   const handleSaveNewInfo = async () => {
     if (inputText !== "") {
-      savedInfoList.push(inputText);
-      saveInfo(savedInfoList);
+      infoListOfTheTime.push(inputText);
+      saveInfo(infoListOfTheTime);
     }
     setInputText("");
     // handleClose();
@@ -48,8 +51,8 @@ export default function useInfoHandler() {
     if (editText[idx] === "") {
       handleDelete(idx);
     } else {
-      savedInfoList[idx] = editText[idx];
-      saveInfo(savedInfoList);
+      infoListOfTheTime[idx] = editText[idx];
+      saveInfo(infoListOfTheTime);
       handleEditMode(idx);
     }
   };
@@ -76,9 +79,9 @@ export default function useInfoHandler() {
       kind: "warning",
     });
     if (confirmed) {
-      savedInfoList.splice(idx, 1);
-      setEditMode(new Array(savedInfoList.length).fill(false));
-      saveInfo(savedInfoList);
+      infoListOfTheTime.splice(idx, 1);
+      setEditMode(new Array(infoListOfTheTime.length).fill(false));
+      saveInfo(infoListOfTheTime);
     }
   };
 
@@ -92,7 +95,7 @@ export default function useInfoHandler() {
 
   return {
     id,
-    savedInfoList,
+    infoListOfTheTime,
     inputText,
     setInputText,
     editMode,
