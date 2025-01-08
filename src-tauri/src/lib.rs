@@ -1,6 +1,6 @@
 use std::{fs::{self, write, File}, io::{BufReader, Error}};
 use std::collections::HashMap;
-use calamine::{open_workbook, Reader, Xlsx};
+use calamine::{open_workbook_auto, Reader, Sheets};
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
@@ -35,10 +35,10 @@ fn read_file_command(file_path: String) -> String{
 #[tauri::command]
 fn read_data_from_excel(file_path: String) -> Vec<HashMap<String, String>>{
     let mut data_list: Vec<HashMap<String, String>> = Vec::new();
-    let mut workbook: Xlsx<BufReader<File>>;
+    let mut workbook: Sheets<BufReader<File>>;
 
-    match open_workbook(file_path) {
-        Ok(result) =>{
+    match open_workbook_auto(file_path) {
+        Ok(result) => {
             workbook = result;
         },
         Err(e)=>{
