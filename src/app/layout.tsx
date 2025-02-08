@@ -1,11 +1,13 @@
-import type { Metadata } from "next";
+"use client";
+// import type { Metadata } from "next";
 import "./globals.css";
+import { hideDetailDiv } from "@/lib/cell";
 
-export const metadata: Metadata = {
-  title: "기일부 앱",
-  description:
-    "법관통합 일정메뉴에서 내려받은 엑셀파일을 불러와서 보기 좋게 표시하기 위해 만든 앱입니다.",
-};
+// export const metadata: Metadata = {
+//   title: "기일부 앱",
+//   description:
+//     "법관통합 일정메뉴에서 내려받은 엑셀파일을 불러와서 보기 좋게 표시하기 위해 만든 앱입니다.",
+// };
 
 export default function RootLayout({
   children,
@@ -14,7 +16,13 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ko">
-      <body className="bg-white dark:bg-gray-900">
+      <body
+        className="bg-white dark:bg-gray-900"
+        onMouseOver={hideDetailDiv}
+        onContextMenu={(e) => {
+          e.preventDefault();
+        }}
+      >
         {/* <header className="fixed left-0 right-0 top-0 z-10 dark:bg-gray-900">
           
         </header> */}

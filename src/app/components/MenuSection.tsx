@@ -2,7 +2,6 @@ import React from "react";
 import { open } from "@tauri-apps/plugin-dialog";
 import { useDataDispatch } from "../store/DataProvider";
 import useExcel from "@/lib/hooks/useExcel";
-import { hideDetailDiv } from "@/lib/cell";
 import DateSelectModal from "./modals/DateSelectModal";
 import CategoryModal from "./modals/CategoryModal";
 import { loadSettings } from "@/lib/settings";
@@ -29,10 +28,7 @@ export default function MenuSection() {
   };
 
   return (
-    <section
-      className="no-print flex justify-between fixed top-0 left-0 right-0 z-50 bg-white py-3 px-8"
-      onMouseOver={hideDetailDiv}
-    >
+    <section className="no-print flex justify-between fixed top-0 left-0 right-0 z-50 bg-white py-3 px-8">
       <div className="flex justify-start items-center gap-3">
         <button className="btn btn-sm" onClick={openCategoryModal}>
           사건 부호
