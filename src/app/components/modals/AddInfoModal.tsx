@@ -19,6 +19,8 @@ export default function AddInfoModal() {
     handleClose,
   } = useInfoHandler();
 
+  const dateTime = id.replace("-", "  -  ");
+
   return (
     <dialog id="add_info_modal" className="modal">
       <div className="modal-box">
@@ -29,7 +31,7 @@ export default function AddInfoModal() {
           ✕
         </button>
         <h3 className="font-bold text-lg text-center mb-3">
-          {id} 사건 관련 정보
+          {dateTime} 사건 관련 정보
         </h3>
         <ul className="list-disc list-outside ml-5">
           {infoListOfTheTime.map((info, i) => (

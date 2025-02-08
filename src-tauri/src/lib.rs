@@ -60,9 +60,9 @@ fn read_data_from_excel(file_path: String) -> Vec<HashMap<String, String>>{
                 val.insert("시각".to_string(), row[1].to_string());
                 val.insert("기일종류".to_string(), row[3].to_string());
                 val.insert("사건번호".to_string(), row[4].to_string());
-                val.insert("피고인".to_string(), row[6].to_string());
-                val.insert("사건명".to_string(), row[7].to_string());
-                val.insert("소요예정시간".to_string(), row[9].to_string());
+                val.insert("피고인".to_string(), row[5].to_string());
+                val.insert("사건명".to_string(), row[6].to_string());
+                val.insert("소요예정시간".to_string(), row[8].to_string());
                 data_list.push(val);
             }
             // println!("{:?}", sheets);
