@@ -5,6 +5,7 @@ import useExcel from "@/lib/hooks/useExcel";
 import DateSelectModal from "./modals/DateSelectModal";
 import CategoryModal from "./modals/CategoryModal";
 import { loadSettings } from "@/lib/settings";
+import DateAddModal from "./modals/DateAddModal";
 
 export default function MenuSection() {
   const excelHandler = useExcel();
@@ -12,6 +13,16 @@ export default function MenuSection() {
 
   const openCategoryModal = () => {
     const modal: any = document.getElementById("category_modal")!;
+    modal.showModal();
+  };
+
+  const openDateSelectModal = () => {
+    const modal: any = document.getElementById("date_select_modal")!;
+    modal.showModal();
+  };
+
+  const openDateAddModal = () => {
+    const modal: any = document.getElementById("date_add_modal")!;
     modal.showModal();
   };
 
@@ -39,17 +50,24 @@ export default function MenuSection() {
         <button className="btn btn-sm btn-accent" onClick={handleLoadExcelFile}>
           엑셀 파일 불러오기
         </button>
-
-        <button
-          className="btn btn-sm btn-accent"
-          onClick={() => {
-            const modal: any = document.getElementById("date_select_modal")!;
-            modal.showModal();
-          }}
-        >
-          날짜 선택
-        </button>
+        <div className="dropdown dropdown-hover">
+          <div tabIndex={0} role="button" className="btn btn-sm btn-accent">
+            날짜
+          </div>
+          <ul
+            tabIndex={0}
+            className="dropdown-content menu bg-base-100 rounded-box z-[1] w-max p-2 shadow"
+          >
+            <li>
+              <button onClick={openDateSelectModal}>선택</button>
+            </li>
+            <li>
+              <button onClick={openDateAddModal}>추가</button>
+            </li>
+          </ul>
+        </div>
         <DateSelectModal />
+        <DateAddModal />
         <button
           className="btn btn-sm btn-accent"
           onClick={() => window.print()}

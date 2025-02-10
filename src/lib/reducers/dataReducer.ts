@@ -1,4 +1,4 @@
-import { TcUnit } from "@/models/tcModel";
+import { getTimeList, TcUnit } from "@/models/tcModel";
 import { DataActionType, ScheduleDataType, TcObjType } from "@/lib/dataType";
 import {
   copy,
@@ -68,6 +68,31 @@ export function dataReducer(
         dateList,
         tcObj,
       };
+    }
+
+    case "addDate": {
+      // 새로운 date 추가하고 오름차순 정렬
+      const dateList = [...state.dateList];
+      dateList.push(action.date);
+      dateList.sort();
+
+      // tcObj에도 새로운 tcList 추가
+      const tcList: TcUnit[] = [];
+      const timeList = getTimeList();
+      for (let i = 0; i < 36; i++) {
+        tcList.push({
+          idx: i,
+          date: action.date,
+          time: timeList[i],
+          count: 0,
+          span: 1,
+          isHidden: false,
+          isSelected: false,
+        });
+      }
+      const tcObj = { ...state.tcObj, [action.date]: tcList };
+
+      return { ...state, dateList, tcObj };
     }
 
     case "onDetail": {

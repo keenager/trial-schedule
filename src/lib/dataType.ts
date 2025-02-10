@@ -36,6 +36,11 @@ type LoadAction = {
   caseList: Case[];
 };
 
+type AddDateAction = {
+  type: "addDate";
+  date: string;
+};
+
 type OnDetailAction = {
   type: "onDetail";
   id: string;
@@ -73,6 +78,7 @@ type CancelAction = {
 export type DataActionType =
   | CategoryAction
   | LoadAction
+  | AddDateAction
   | OnDetailAction
   | ClickAction
   | ContextAction
